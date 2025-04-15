@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
@@ -36,7 +37,9 @@ const BankVerifications = () => {
 
   const renderRow = (item) => (
     <>
-      <td className="px-6 py-3 text-blue-600">{item._id}</td>
+      <td className="px-6 py-3 text-blue-600 underline">
+        <Link to={`/bank-details/${item._id}`}>{item._id}</Link>
+      </td>
       <td className="px-6 py-3">{item.bank_account_verified?.[0]?.account_holder_name || 'N/A'}</td>
       <td className="px-6 py-3">{item.bank_account_verified?.[0]?.bank_name || 'N/A'}</td>
       <td className="px-6 py-3 capitalize">{item.bank_account_verified?.[0]?.type || 'N/A'}</td>

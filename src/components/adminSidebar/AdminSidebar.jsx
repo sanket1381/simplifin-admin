@@ -5,7 +5,7 @@ import { FaChevronDown } from 'react-icons/fa';
 
 const AdminSidebar = ({isSidebarOpen}) => {
 
-    const [openSubmenu, setOpenSubmenu] = useState(false);
+    const [openSubmenu, setOpenSubmenu] = useState(true);
     const toggleSubmenu = () => {
         setOpenSubmenu(!openSubmenu);
       };

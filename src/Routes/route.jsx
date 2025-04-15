@@ -1,3 +1,5 @@
+import { Navigate } from "react-router-dom";
+import PrivateRoute from "./privateRoute";
 import AdminLayout from "../layout/AdminLayout";
 import SignInForm from "../pages/SignIn";
 import KycRequests from "../pages/KycRequests";
@@ -5,22 +7,27 @@ import Folios from "../pages/Folios";
 import InvestmentAccounts from "../pages/InvestmentAccounts";
 import Investors from "../pages/Investors";
 import BankVerifications from "../pages/BankVerifications";
-import UserBankDetails from "../pages/userBankDetails";
+import UserKycDetails from "../pages/kycDetails";
+import UserBankDetails from "../pages/bankDetails";
 
 
-const routes=[
+const routes = [
 
-{
-    path:"/signin",
-    element:<SignInForm/>
-},
-{
+  {
+    path: "/signin",
+    element: <SignInForm />
+  },
+  {
     path: "/",
-    element: <AdminLayout />, 
+    element: (
+      <PrivateRoute>
+        <AdminLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
-        index: true, 
-        element: <div>Welcome to the Admin Panel</div>
+        index: true,
+        element: <Navigate to="/folios" replace />
       },
       {
         path: "folios", // full path becomes /admin/kyc-requests
@@ -31,20 +38,24 @@ const routes=[
         element: <InvestmentAccounts />,
       },
       {
-        path: "investors", 
+        path: "investors",
         element: <Investors />,
       },
 
       {
-        path: "kyc-requests", 
+        path: "kyc-requests",
         element: <KycRequests />,
       },
       {
-        path: "bankAccount-verifications", 
+        path: "bankAccount-verifications",
         element: <BankVerifications />,
       },
       {
-        path: "/details/:id", 
+        path: "/kyc-details/:id",
+        element: <UserKycDetails />,
+      },
+      {
+        path: "/bank-details/:id",
         element: <UserBankDetails />,
       },
 

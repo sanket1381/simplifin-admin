@@ -2,30 +2,43 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { div } from "framer-motion/client";
-
 
 const SignInForm = () => {
-
-
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [error, setError] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting with:", email, password);
 
+    // Reset previous errors
+    setEmailError("");
+    setPasswordError("");
+
+    let hasError = false;
+
+    if (!email) {
+      setEmailError("Email is required");
+      hasError = true;
+    }
+
+    if (!password) {
+      setPasswordError("Password is required");
+      hasError = true;
+    }
+
+    if (hasError) return;
 
     try {
-      const res = await axios.post("https://devapi.simplifin.in/auth/signin", {
-        email,
-        password,
-        type: "normalLogin",
-      },
+      const res = await axios.post(
+        "https://devapi.simplifin.in/auth/signin",
+        {
+          email,
+          password,
+          type: "normalLogin",
+        },
         {
           headers: {
             "Content-Type": "application/json",
@@ -33,19 +46,15 @@ const SignInForm = () => {
           },
         }
       );
-      console.log("Login response:", res.data);
 
       const { token } = res.data.result;
       if (token) {
         localStorage.setItem("token", token);
-        console.log("Token stored:", token);
-
         navigate("/");
       } else {
         console.error("No token received");
       }
-    }
-    catch (err) {
+    } catch (err) {
       const message = err.response?.data?.message || "";
 
       if (message === "User does not exist, create a new account") {
@@ -60,14 +69,13 @@ const SignInForm = () => {
     }
   };
 
-
   return (
-    <div className=" min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className=" w-[600px] px-4"
+        className="w-[600px] px-4"
       >
         <div className="w-full max-w-2xl p-12 bg-white shadow-2xl rounded-3xl border border-gray-200">
           <motion.h2
@@ -76,7 +84,7 @@ const SignInForm = () => {
             transition={{ delay: 0.2 }}
             className="text-4xl font-bold text-gray-800 mb-2 text-center"
           >
-            Simplimint
+            Simplifint
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
@@ -104,11 +112,15 @@ const SignInForm = () => {
                   if (emailError) setEmailError("");
                 }}
                 type="email"
+                value={email}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none ${emailError ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {emailError && (
-                <span className="text-red-500 text-sm mt-1 block">{emailError}</span>
+                <span className="text-red-500 text-sm mt-1 block">
+                  {emailError}
+                </span>
               )}
             </div>
 
@@ -122,11 +134,15 @@ const SignInForm = () => {
                   if (passwordError) setPasswordError("");
                 }}
                 type="password"
+                value={password}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none"
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none ${passwordError ? "border-red-500" : "border-gray-300"
+                  }`}
               />
               {passwordError && (
-                <span className="text-red-500 text-sm mt-1 block">{passwordError}</span>
+                <span className="text-red-500 text-sm mt-1 block">
+                  {passwordError}
+                </span>
               )}
             </div>
 
@@ -146,4 +162,3 @@ const SignInForm = () => {
 };
 
 export default SignInForm;
-

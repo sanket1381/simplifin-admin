@@ -22,4 +22,4 @@ api.interceptors.request.use(
 );
 
 // Common methods
-export const get = (url, params = {}) => api.get(url, { params });
+export const get = (url) => api.get(url);
