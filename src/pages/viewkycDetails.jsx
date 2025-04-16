@@ -89,4 +89,4 @@ const TableRow = ({ label, value }) => (
   
 
 export default UserKycDetails;
-
+      

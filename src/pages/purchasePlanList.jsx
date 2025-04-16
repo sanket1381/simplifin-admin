@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
 
-const KycRequests = () => {
+const PurchasePlanList = () => {
   const [data, setData] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,7 +11,7 @@ const KycRequests = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const pageSize = 2;
+  const [pageSize, setPageSize] = useState(5); 
 
   const fetchData = async () => {
     try {
@@ -19,7 +19,6 @@ const KycRequests = () => {
       const response = await get(
         `/kyc?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
       );
-
       const result = response?.data?.result || [];
       setData(result);
       setHasNextPage(result.length === pageSize);
@@ -33,7 +32,7 @@ const KycRequests = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortOrder]);
+  }, [currentPage, sortOrder, pageSize]); // pageSize included
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -56,10 +55,23 @@ const KycRequests = () => {
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
+  const handleResetFilters = () => {
+    setSearchTerm('');
+    setSortOrder('asc');
+    setCurrentPage(1);
+    setPageSize(10);
+    fetchData();
+  };
+
   const handlePageChange = (page) => {
     if (page > 0) {
       setCurrentPage(page);
     }
+  };
+
+  const handlePageSizeChange = (size) => {
+    setPageSize(size);
+    setCurrentPage(1); // Reset to first page on size change
   };
 
   const headers = ['ID', 'Status', 'Name', 'PAN', 'Email', 'Mobile', 'Created At'];
@@ -98,7 +110,7 @@ const KycRequests = () => {
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div className="w-full min-h-screen py-6 bg-gray-100">
+    <div className="w-full min-h-screen py-6 bg-white">
       <h1 className="text-2xl font-bold mb-4 px-6">KYC Requests</h1>
       <div className="px-6">
         <Table
@@ -113,11 +125,16 @@ const KycRequests = () => {
           currentPage={currentPage}
           onPageChange={handlePageChange}
           hasNextPage={hasNextPage}
+          handleResetFilters={handleResetFilters}
+          pageSize={pageSize}
+          onPageSizeChange={handlePageSizeChange}
         />
       </div>
     </div>
   );
 };
 
-export default KycRequests;
+export default PurchasePlanList;
+
+
 

@@ -12,26 +12,58 @@ const Table = ({
   currentPage,
   onPageChange,
   hasNextPage,
+  handleResetFilters,
+  pageSize,
+  onPageSizeChange,
 }) => {
   return (
     <div className="flex flex-col min-h-screen px-6 py-4">
       {/* Search and Filter Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-        {/* Search Bar */}
-        <div className="flex items-center border border-gray-300 rounded-md px-3 py-2 bg-white shadow-sm" style={{ width: '300px' }}>
-          <FiSearch className="text-gray-500 mr-2" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by Name or PAN..."
-            className="w-full outline-none text-sm"
-          />
+        {/* Search and Reset */}
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <FiSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400 text-sm" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search by Name or PAN..."
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none w-72"
+            />
+          </div>
+
+          <button
+            onClick={handleResetFilters}
+            className="text-sm border border-gray-300 rounded-md px-3 py-2 shadow-sm bg-blue-200 hover:bg-blue-400 text-gray-700 focus:outline-none"
+          >
+            Reset Filters
+          </button>
         </div>
 
-        {/* Optional Filter Dropdown */}
-        <div>
-          <select className="border border-gray-300 rounded-md px-4 py-2 bg-white text-sm text-gray-700 shadow-sm">
+        {/* Page size and Filter dropdowns */}
+        <div className="flex items-center gap-4">
+          {/* Page size dropdown */}
+          <div className="flex items-center gap-2">
+            <label htmlFor="pageSize" className="text-sm font-medium text-gray-700">
+              Records per page:
+            </label>
+            <select
+              id="pageSize"
+              value={pageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              className="text-sm border border-gray-300 rounded-md px-3 py-2 shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value={1}>1</option>
+              <option value={3}>3</option>
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={15}>15</option>
+            </select>
+          </div>
+
+          {/* Optional Filter Dropdown */}
+          <select className="text-sm border border-gray-300 rounded-md px-3 py-2 shadow-sm bg-blue-200 hover:bg-blue-400 text-gray-700 focus:outline-none ">
             <option value="">Filter</option>
           </select>
         </div>
@@ -73,12 +105,12 @@ const Table = ({
         </table>
       </div>
 
-      {/* Pagination at the bottom center */}
+      {/* Pagination */}
       <div className="flex justify-center items-center mt-6 space-x-4">
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white text-sm rounded disabled:opacity-50 cursor-pointer"
+          className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white text-sm rounded disabled:opacity-50 transition"
         >
           Previous
         </button>
@@ -88,7 +120,7 @@ const Table = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={!hasNextPage}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white text-sm rounded disabled:opacity-50 cursor-pointer"
+          className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white text-sm rounded disabled:opacity-50 transition"
         >
           Next
         </button>
@@ -98,4 +130,3 @@ const Table = ({
 };
 
 export default Table;
-
