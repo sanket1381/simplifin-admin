@@ -12,16 +12,20 @@ const PurchasePlanList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [pageSize, setPageSize] = useState(5); 
+   const [totalPages, setTotalPages] = useState(1);
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await get(
-        `/kyc?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
+        `/sip/list?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
       );
       const result = response?.data?.result || [];
+      const metaData = response?.data?.metaData;
+
       setData(result);
       setHasNextPage(result.length === pageSize);
+      setTotalPages(metaData?.totalPages || 1);
     } catch (err) {
       console.error(err);
       setError('Failed to fetch data');
@@ -111,7 +115,7 @@ const PurchasePlanList = () => {
 
   return (
     <div className="w-full min-h-screen py-6 bg-white">
-      <h1 className="text-2xl font-bold mb-4 px-6">KYC Requests</h1>
+      <h1 className="text-2xl font-bold mb-4 px-6">Purchase Plans</h1>
       <div className="px-6">
         <Table
           headers={headers}
@@ -128,6 +132,7 @@ const PurchasePlanList = () => {
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
+          totalPages={totalPages}
         />
       </div>
     </div>

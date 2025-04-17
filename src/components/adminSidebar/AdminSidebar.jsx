@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa';
 
 const AdminSidebar = ({ isSidebarOpen }) => {
@@ -7,133 +7,105 @@ const AdminSidebar = ({ isSidebarOpen }) => {
   const [openTransactionMenu, setTransactionMenu] = useState(true); 
   const [openHelpMenu, setHelpMenu] = useState(true); 
 
-  const toggleCustomerMenu = () => {
-    setOpenCustomerMenu(!openCustomerMenu);
-  };
+  const toggleCustomerMenu = () => setOpenCustomerMenu(!openCustomerMenu);
+  const toggleTransactionMenu = () => setTransactionMenu(!openTransactionMenu);
+  const toggleHelpMenu = () => setHelpMenu(!openHelpMenu);
 
-  const toggleTransactionMenu = () => {
-    setTransactionMenu(!openTransactionMenu);
-  };
-  const toggleHelpMenu = () => {
-    setHelpMenu(!openHelpMenu);
-  };
+  const linkClass = ({ isActive }) =>
+    `block text-sm px-3 py-2 rounded-md ${
+      isActive
+        ? 'bg-blue-200 text-blue-700 font-medium'
+        : 'text-gray-900  hover:bg-gray-200'
+    }`;
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 pb-32  border-r border-gray-200 sm:translate-x-0 bg-gray-100
-      transition-transform  overflow-y-auto ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 pb-32 px-3 border-r border-gray-200 sm:translate-x-0 bg-gray-100 transition-transform overflow-y-auto ${
+        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}
     >
-      {/* Customer Dropdown */}
-      <div>
+      {/* CUSTOMER */}
+      <div className="mt-2">
         <button
           onClick={toggleCustomerMenu}
-          className="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-200 rounded-md"
+          className="w-full flex items-center justify-between px-2 py-2 text-gray-900 hover:text-gray-700 hover:bg-gray-200 rounded-md"
         >
-          <span className=" text-gray-600 font-bold tracking-wide uppercase text-sm">
+          <span className="text-gray-600 font-bold tracking-wide uppercase text-sm">
             CUSTOMER
           </span>
           <FaChevronDown
-            className={`transition-transform duration-200 ${openCustomerMenu ? 'rotate-180' : ''}`}
+            className={`transition-transform duration-200 ${
+              openCustomerMenu ? 'rotate-180' : ''
+            }`}
           />
         </button>
 
         {openCustomerMenu && (
           <div className="mt-1 space-y-1">
-            <Link to="/folios" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            <NavLink to="/folios" className={linkClass}>
               Folios
-            </Link>
-            <Link to="/investment-Accounts" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            </NavLink>
+            <NavLink to="/investment-Accounts" className={linkClass}>
               Investment Accounts
-            </Link>
-            <Link to="/investors" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            </NavLink>
+            <NavLink to="/investors" className={linkClass}>
               Investors
-            </Link>
-            <Link to="/kyc-requests" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            </NavLink>
+            <NavLink to="/kyc-requests" className={linkClass}>
               KYC Requests
-            </Link>
-            <Link to="/bankAccount-verifications" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            </NavLink>
+            <NavLink to="/bankAccount-verifications" className={linkClass}>
               Bank Account Verifications
-            </Link>
+            </NavLink>
           </div>
         )}
       </div>
 
-      {/* TRANSACTION  Dropdown */}
-      <div>
+      {/* MF TRANSACTION */}
+      <div className="mt-4">
         <button
           onClick={toggleTransactionMenu}
-          className="w-full flex items-center justify-between px-3 py-2 mt-3 text-gray-700 hover:bg-gray-200 rounded-md"
+          className="w-full flex items-center justify-between px-2 py-2 text-gray-900 hover:text-gray-700 hover:bg-gray-200 rounded-md"
         >
-          <span className=" text-gray-600 font-bold tracking-wide uppercase text-sm">
-            MF TRANSACTION
+          <span className="text-gray-600 font-bold tracking-wide uppercase text-sm">
+            MF TRANSACTIONS
           </span>
           <FaChevronDown
-            className={`transition-transform duration-200 ${openTransactionMenu ? 'rotate-180' : ''}`}
+            className={`transition-transform duration-200 ${
+              openTransactionMenu ? 'rotate-180' : ''
+            }`}
           />
         </button>
 
         {openTransactionMenu && (
           <div className="mt-1 space-y-1">
-            <Link to="/bank-mandates" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            <NavLink to="/bank-mandates" className={linkClass}>
               Bank Mandates
-            </Link>
-            <Link to="/payments" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            </NavLink>
+            <NavLink to="/payments" className={linkClass}>
               Payments
-            </Link>
-            <Link to="/purchases" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            </NavLink>
+            <NavLink to="/purchases" className={linkClass}>
               Purchases
-            </Link>
-            <Link to="/purchase-plans" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
-              Purchase plans
-            </Link>
-            <Link to="/redemptions" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
+            </NavLink>
+            <NavLink to="/purchase-plans" className={linkClass}>
+              Purchase Plans
+            </NavLink>
+            <NavLink to="/redemptions" className={linkClass}>
               Redemptions
-            </Link>
-            <Link to="/redemption-plans" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
-              Redemption plans
-            </Link>
-            <Link to="/switches" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
-              Switches
-            </Link>
-            <Link to="/switch-plans" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
-              Switch plans
-            </Link>
-            <Link to="/mf-settlements" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
-              Mf settlements
-            </Link>
+            </NavLink>
+            <NavLink to="/redemption-plans" className={linkClass}>
+              Redemption Plans
+            </NavLink>
+          
           </div>
         )}
       </div>
 
-          {/* Help  Dropdown */}
-      <div>
-        <button
-          onClick={toggleHelpMenu}
-          className="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:bg-gray-200 rounded-md"
-        >
-          <span className=" text-gray-600 font-bold tracking-wide uppercase text-sm">
-            HElP
-          </span>
-          <FaChevronDown
-            className={`transition-transform duration-200 ${openHelpMenu ? 'rotate-180' : ''}`}
-          />
-        </button>
-
-
-        {openHelpMenu && (
-          <div className="mt-1 space-y-1">
-            <Link to="/api-refrence" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
-              API refrence
-            </Link>
-            <Link to="/product-guides" className="flex w-full text-base px-3 py-2 text-gray-900 hover:text-blue-600 hover:bg-blue-200 rounded-md transition">
-              Product guides
-            </Link>
-            
-          </div>
-        )}
-      </div>
+      
     </aside>
   );
 };
 
 export default AdminSidebar;
+

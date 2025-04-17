@@ -15,6 +15,7 @@ const Table = ({
   handleResetFilters,
   pageSize,
   onPageSizeChange,
+  totalPages, // ✅ added
 }) => {
   return (
     <div className="flex flex-col min-h-screen px-6 py-4">
@@ -115,16 +116,17 @@ const Table = ({
           Previous
         </button>
         <span className="text-sm text-gray-700">
-          Page {currentPage}
+          {currentPage} of {totalPages}
         </span>
         <button
           onClick={() => onPageChange(currentPage + 1)}
-          disabled={!hasNextPage}
+          disabled={currentPage >= totalPages}
           className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white text-sm rounded disabled:opacity-50 transition"
         >
           Next
         </button>
       </div>
+
     </div>
   );
 };

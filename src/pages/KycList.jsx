@@ -11,17 +11,21 @@ const KycRequests = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageSize, setPageSize] = useState(5); 
+  const [pageSize, setPageSize] = useState(10); 
+  const [totalPages, setTotalPages] = useState(1);// ✅ added
 
-  const fetchData = async () => {
+  const fetchData = async () => { 
     try {
       setLoading(true);
       const response = await get(
         `/kyc?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
       );
       const result = response?.data?.result || [];
+      const metaData = response?.data?.metaData; //aded
+
       setData(result);
       setHasNextPage(result.length === pageSize);
+      setTotalPages(metaData?.totalPages || 1); // ✅ set totalPages from API
     } catch (err) {
       console.error(err);
       setError('Failed to fetch data');
@@ -32,7 +36,7 @@ const KycRequests = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortOrder, pageSize]); // pageSize included
+  }, [currentPage, sortOrder, pageSize]);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -71,7 +75,7 @@ const KycRequests = () => {
 
   const handlePageSizeChange = (size) => {
     setPageSize(size);
-    setCurrentPage(1); // Reset to first page on size change
+    setCurrentPage(1);
   };
 
   const headers = ['ID', 'Status', 'Name', 'PAN', 'Email', 'Mobile', 'Created At'];
@@ -128,6 +132,7 @@ const KycRequests = () => {
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
+          totalPages={totalPages} // ✅ pass to Table
         />
       </div>
     </div>
@@ -135,6 +140,3 @@ const KycRequests = () => {
 };
 
 export default KycRequests;
-
-
-
