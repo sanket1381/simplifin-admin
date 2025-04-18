@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link ,useNavigate} from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
 
@@ -12,27 +12,36 @@ const KycRequests = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [pageSize, setPageSize] = useState(10); 
-  const [totalPages, setTotalPages] = useState(1);// ✅ added
+  const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate(); 
 
   const fetchData = async () => { 
+    
     try {
       setLoading(true);
       const response = await get(
         `/kyc?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
       );
       const result = response?.data?.result || [];
-      const metaData = response?.data?.metaData; //aded
+      const metaData = response?.data?.metaData; 
 
       setData(result);
       setHasNextPage(result.length === pageSize);
-      setTotalPages(metaData?.totalPages || 1); // ✅ set totalPages from API
-    } catch (err) {
+      setTotalPages(metaData?.totalPages || 1); 
+    } 
+    catch (err) {
       console.error(err);
+      
+    if (err?.response?.data?.message === "Unauthorized access") {
+      navigate('/signin');
+    } else {
       setError('Failed to fetch data');
-    } finally {
-      setLoading(false);
     }
-  };
+    
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchData();
@@ -132,7 +141,8 @@ const KycRequests = () => {
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
-          totalPages={totalPages} // ✅ pass to Table
+          totalPages={totalPages} 
+          searchPlaceholder="Search by Name or PAN..."
         />
       </div>
     </div>

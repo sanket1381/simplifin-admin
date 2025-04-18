@@ -15,7 +15,8 @@ const Table = ({
   handleResetFilters,
   pageSize,
   onPageSizeChange,
-  totalPages, // ✅ added
+  totalPages,
+  searchPlaceholder = "Search...",
 }) => {
   return (
     <div className="flex flex-col min-h-screen px-6 py-4">
@@ -29,7 +30,7 @@ const Table = ({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by Name or PAN..."
+              placeholder={searchPlaceholder}
               className="pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none w-72"
             />
           </div>
@@ -77,7 +78,7 @@ const Table = ({
             <tr>
               {headers.map((header, idx) => (
                 <th key={idx} className="px-6 py-3 text-left font-semibold">
-                  {header === 'Created At' ? (
+                  {header.toLowerCase() === 'created at' ? (
                     <button onClick={handleSortClick} className="text-blue-600">
                       {header} {sortOrder === 'asc' ? '▲' : '▼'}
                     </button>

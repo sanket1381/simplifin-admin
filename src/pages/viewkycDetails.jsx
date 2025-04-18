@@ -47,20 +47,37 @@ const UserKycDetails = () => {
               label="Status"
               value={
                 <span
-                  className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
-                    userData.status === 'successful'
+                  className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${userData.status === 'successful'
                       ? 'bg-green-100 text-green-600'
                       : 'bg-red-100 text-red-600'
-                  }`}
+                    }`}
                 >
                   {userData.status === 'successful' ? 'Successful' : 'Failed'}
                 </span>
               }
             />
-            <TableRow label="PAN" value={userData.pan || 'N/A'} />
-            <TableRow label="Email" value={userData.email || 'N/A'} />
-            <TableRow label="Mobile Number" value={userData.mobile?.number || 'N/A'} />
-            <TableRow label="Confidence" value={""} />
+            <TableRow label="CAN" value={userData?.mfCAN?.can || 'N/A'} />
+            <TableRow label="PAN" value={userData?.pan || 'N/A'} />
+            <TableRow label="EMAIL" value={userData?.email || 'N/A'} />
+            <TableRow label="MOBILE NUMBER" value={userData.mobile?.number || 'N/A'} />
+            <TableRow label="GENDER" value={userData?.gender || 'N/A'} />
+            <TableRow label="DATE OF BIRTH" value={userData?.date_of_birth || 'N/A'} />
+            <TableRow label="AADHAAR NUMBER" value={userData?.aadhaar_number || 'N/A'} />
+            <TableRow label="NOMINEE NAME" value={userData?.nominee?.nomineeName || 'N/A'} />
+            <TableRow label="NOMINEE RELATION" value={userData?.nominee?.nomineeRelation || 'N/A'} />
+            <TableRow
+              label="NOMINEE DATE OF BIRTH"
+              value={
+                userData?.nominee?.nomineeDateOfBirth
+                  ? new Date(userData.nominee.nomineeDateOfBirth).toLocaleDateString('en-US', { dateStyle: 'long' })
+                  : 'N/A'
+              }
+            />
+               <TableRow label="AADHAAR CARD" value={"" || 'N/A'} />
+               <TableRow label="PAN CARD" value={"" || 'N/A'} />
+               <TableRow label="PHOTO" value={""|| 'N/A'} />
+               <TableRow label="SIGNATURE" value={"" || 'N/A'} />
+               <TableRow label="CANCELLED CHEQUE" value={"" || 'N/A'} />
             <TableRow
               label="Created At"
               value={
@@ -77,16 +94,16 @@ const UserKycDetails = () => {
 };
 
 const TableRow = ({ label, value }) => (
-    <tr className="border-b">
-      <td className="px-6 py-4 bg-gray-100 text-sm font-medium text-gray-600 w-1/3">
-        {label}
-      </td>
-      <td className="px-6 py-4 text-base font-semibold text-gray-700">
-        {value}
-      </td>
-    </tr>
-  );
-  
+  <tr className="border-b">
+    <td className="px-6 py-4 bg-gray-100 text-sm font-medium text-gray-600 w-1/3">
+      {label}
+    </td>
+    <td className="px-6 py-4 text-base font-semibold text-gray-700">
+      {value}
+    </td>
+  </tr>
+);
+
 
 export default UserKycDetails;
-      
+

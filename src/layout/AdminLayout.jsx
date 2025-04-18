@@ -3,28 +3,34 @@ import AdminHeader from '../components/adminHeader/AdminHeader';
 import AdminSidebar from '../components/adminSidebar/AdminSidebar';
 import { Outlet } from 'react-router-dom';
 
-const AdminLayout = ({ children }) => {
+const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100 overflow-y-auto overflow-x-hidden">
       {/* Header */}
-      <AdminHeader toggleSidebar={toggleSidebar} />
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <AdminHeader toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      </div>
 
-      {/* Content area with Sidebar */}
+      {/* Sidebar + Main */}
       <div className="flex pt-16">
-        <AdminSidebar isSidebarOpen={isSidebarOpen} />
+        {/* Sidebar */}
+        <div
+          className={`fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white shadow-md z-40 transition-all duration-300 
+            ${isSidebarOpen ? 'w-64' : 'w-16'}`}
+        >
+          <AdminSidebar isSidebarOpen={isSidebarOpen} />
+        </div>
 
         {/* Main content */}
-        <div className={`flex-1 transition-all bg-gray-50 duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-16'}`}>
-          <div className="w-full p-6">
-            <Outlet />
-          </div>
-        </div>
+        <main
+          className={`transition-all duration-300 flex-1 px-4 py-6 ml-16 ${
+            isSidebarOpen ? 'ml-64' : 'ml-16'
+          }`}
+        >
+          <Outlet />
+        </main>
       </div>
     </div>
   );

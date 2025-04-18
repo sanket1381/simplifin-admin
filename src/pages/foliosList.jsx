@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link ,useNavigate} from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
 
-const PaymentList= () => {
+const FoliosList = () => {
   const [data, setData] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
@@ -11,14 +11,16 @@ const PaymentList= () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageSize, setPageSize] = useState(5); 
+  const [pageSize, setPageSize] = useState(10); 
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate(); 
 
-  const fetchData = async () => {
+  const fetchData = async () => { 
+    
     try {
       setLoading(true);
       const response = await get(
-        `/kyc?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
+        `/mutualFund/folios/list?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
       );
       const result = response?.data?.result || [];
       const metaData = response?.data?.metaData; 
@@ -26,18 +28,24 @@ const PaymentList= () => {
       setData(result);
       setHasNextPage(result.length === pageSize);
       setTotalPages(metaData?.totalPages || 1); 
-
-    } catch (err) {
+    } 
+    catch (err) {
       console.error(err);
+      
+    if (err?.response?.data?.message === "Unauthorized access") {
+      navigate('/signin');
+    } else {
       setError('Failed to fetch data');
-    } finally {
-      setLoading(false);
     }
-  };
+    
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortOrder, pageSize]); // pageSize included
+  }, [currentPage, sortOrder, pageSize]);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -76,38 +84,24 @@ const PaymentList= () => {
 
   const handlePageSizeChange = (size) => {
     setPageSize(size);
-    setCurrentPage(1); // Reset to first page on size change
+    setCurrentPage(1);
   };
 
-  const headers = ['ID', 'Status', 'Name', 'PAN', 'Email', 'Mobile', 'Created At'];
+  const headers = ['  FOLIO NUMBER', 'INVESTMENT ACCOUNT','PAN', 'AMC'];
 
   const renderRow = (item) => (
     <>
-      <td className="px-6 py-3 text-blue-600 underline">
+      {/* <td className="px-6 py-3 text-blue-600 underline">
         <Link to={`/kyc-details/${item._id}`}>{item._id}</Link>
+      </td> */}
+      <td className="px-6 py-3 text-blue-600 underline">
+        <Link to={`/kyc-details/${item?.folioNumber}`}>{item?.folioNumber}</Link>
       </td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium ${
-            item.status === 'successful'
-              ? 'bg-green-100 text-green-600'
-              : 'bg-red-100 text-red-600'
-          }`}
-        >
-          {item.status === 'successful' ? 'Successful' : 'Failed'}
-        </span>
-      </td>
-      <td className="px-6 py-3">{item?.name}</td>
+      <td className="px-6 py-3">{item?.username}</td>
       <td className="px-6 py-3">{item.pan}</td>
-      <td className="px-6 py-3">{item.email}</td>
-      <td className="px-6 py-3">{item.mobile?.number || 'N/A'}</td>
-      <td className="px-6 py-3">
-        {item.created_at
-          ? new Date(item.created_at).toLocaleDateString('en-US', {
-              dateStyle: 'long',
-            })
-          : 'N/A'}
-      </td>
+      <td className="px-6 py-3">{item.schemeName}</td>
+      
+
     </>
   );
 
@@ -116,7 +110,7 @@ const PaymentList= () => {
 
   return (
     <div className="w-full min-h-screen py-6 bg-white">
-      <h1 className="text-2xl font-bold mb-4 px-6">KYC Requests</h1>
+      <h1 className="text-2xl font-bold mb-4 px-6">Folios</h1>
       <div className="px-6">
         <Table
           headers={headers}
@@ -133,14 +127,12 @@ const PaymentList= () => {
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
-          totalPages={totalPages}
+          totalPages={totalPages} 
+          searchPlaceholder="Search by Name ..."
         />
       </div>
     </div>
   );
 };
 
-export default PaymentList;
-
-
-
+export default FoliosList;

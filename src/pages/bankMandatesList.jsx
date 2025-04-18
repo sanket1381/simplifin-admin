@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
 
@@ -11,8 +11,10 @@ const BankMandatesList = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageSize, setPageSize] = useState(5); 
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
+
 
   const fetchData = async () => {
     try {
@@ -26,10 +28,17 @@ const BankMandatesList = () => {
 
       setData(result);
       setHasNextPage(result.length === pageSize);
-      setTotalPages(metaData?.totalPages || 1); 
-    } catch (err) {
+      setTotalPages(metaData?.totalPages || 1);
+    }
+    catch (err) {
       console.error(err);
-      setError('Failed to fetch data');
+
+      if (err?.response?.data?.message === "Unauthorized access") {
+        navigate('/signin');
+      } else {
+        setError('Failed to fetch data');
+      }
+
     } finally {
       setLoading(false);
     }
@@ -37,7 +46,7 @@ const BankMandatesList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortOrder, pageSize]); // pageSize included
+  }, [currentPage, sortOrder, pageSize]);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -76,23 +85,23 @@ const BankMandatesList = () => {
 
   const handlePageSizeChange = (size) => {
     setPageSize(size);
-    setCurrentPage(1); // Reset to first page on size change
+    setCurrentPage(1);
   };
 
-  const headers = ['INVESTORS', 'MANDATE ID', 'ID', 'REFRENCE', 'STATUS', 'LAST UPDATED', ];
+  const headers = ['INVESTORS', 'MANDATE ID', 'ID', 'REFRENCE', 'STATUS', 'LAST UPDATED',];
 
   const renderRow = (item) => (
     <>
-     <td className="px-6 py-3">{item?.investor}</td>
-     <td className="px-6 py-3">{item?.mmrn}</td>
-     {/* <td className="px-6 py-3">{item?._id}</td> */}
-     <td className="px-6 py-3 text-blue-600 underline">
+      <td className="px-6 py-3">{item?.username}</td>
+      <td className="px-6 py-3">{item?.mmrn}</td>
+
+      <td className="px-6 py-3 text-blue-600 underline">
         <Link to={`/mandateDetails/${item._id}`}>{item._id}</Link>
       </td>
-     <td className="px-6 py-3">{item?.uniqueRefNo}</td>
-     <td className="px-6 py-3">{item?.status}</td>
-     <td className="px-6 py-3">{item?.update}</td>
-     
+      <td className="px-6 py-3">{item?.uniqueRefNo}</td>
+      <td className="px-6 py-3">{item?.status}</td>
+      <td className="px-6 py-3">{item?.update}</td>
+
     </>
   );
 
@@ -118,7 +127,8 @@ const BankMandatesList = () => {
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
-          totalPages={totalPages} 
+          totalPages={totalPages}
+          searchPlaceholder="Search by Name ..."
         />
       </div>
     </div>

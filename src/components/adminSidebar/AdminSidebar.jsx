@@ -5,11 +5,11 @@ import { FaChevronDown } from 'react-icons/fa';
 const AdminSidebar = ({ isSidebarOpen }) => {
   const [openCustomerMenu, setOpenCustomerMenu] = useState(true);
   const [openTransactionMenu, setTransactionMenu] = useState(true); 
-  const [openHelpMenu, setHelpMenu] = useState(true); 
+  
 
   const toggleCustomerMenu = () => setOpenCustomerMenu(!openCustomerMenu);
   const toggleTransactionMenu = () => setTransactionMenu(!openTransactionMenu);
-  const toggleHelpMenu = () => setHelpMenu(!openHelpMenu);
+  
 
   const linkClass = ({ isActive }) =>
     `block text-sm px-3 py-2 rounded-md ${
@@ -20,10 +20,11 @@ const AdminSidebar = ({ isSidebarOpen }) => {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 pb-32 px-3 border-r border-gray-200 sm:translate-x-0 bg-gray-100 transition-transform overflow-y-auto ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}
-    >
+    className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 pb-32 px-3 border-r border-gray-200 bg-gray-100 transition-transform transform overflow-y-auto ${
+      isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+    }`}
+  >
+  
       {/* CUSTOMER */}
       <div className="mt-2">
         <button
@@ -44,12 +45,6 @@ const AdminSidebar = ({ isSidebarOpen }) => {
           <div className="mt-1 space-y-1">
             <NavLink to="/folios" className={linkClass}>
               Folios
-            </NavLink>
-            <NavLink to="/investment-Accounts" className={linkClass}>
-              Investment Accounts
-            </NavLink>
-            <NavLink to="/investors" className={linkClass}>
-              Investors
             </NavLink>
             <NavLink to="/kyc-requests" className={linkClass}>
               KYC Requests
@@ -81,9 +76,6 @@ const AdminSidebar = ({ isSidebarOpen }) => {
           <div className="mt-1 space-y-1">
             <NavLink to="/bank-mandates" className={linkClass}>
               Bank Mandates
-            </NavLink>
-            <NavLink to="/payments" className={linkClass}>
-              Payments
             </NavLink>
             <NavLink to="/purchases" className={linkClass}>
               Purchases

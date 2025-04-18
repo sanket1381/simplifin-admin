@@ -50,22 +50,22 @@ const UserBankDetails = () => {
                         <TableRow label="ACCOUNT TYPE" value={bank.type} />
 
                         <TableRow
-                            label=" Verification Status"
+                            label=" VERIFICATION STATUS"
                             value={
                                 <span
                                     className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${bank.account_status === 'VALID'
-                                            ? 'bg-green-100 text-green-600'
-                                            : 'bg-red-100 text-red-600'
+                                        ? 'bg-green-100 text-green-600'
+                                        : 'bg-red-100 text-red-600'
                                         }`}
                                 >
                                     {bank.account_status === 'VALID' ? 'Completed' : 'Failed'}
                                 </span>
                             }
                         />
-                        <TableRow label="BANK ACCOUNT ID" value={""} />
-                        <TableRow label="CONFIDENCE" value={""} />
+                        <TableRow label="BANK ACCOUNT ID" value={bank?.account_status_code || 'N/A'} />
+                        <TableRow label="REFRENCE ID" value={bank?.reference_id || 'N/A'} />
                         <TableRow
-                            label="Created At"
+                            label="CREATED AT"
                             value={
                                 bank?.created_at
                                     ? new Date(bank.created_at).toLocaleDateString('en-US', { dateStyle: 'long' })

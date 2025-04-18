@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
 
@@ -11,8 +11,9 @@ const PurchasesList = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageSize, setPageSize] = useState(5);
-  const [totalPages, setTotalPages] = useState(1); 
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -25,18 +26,26 @@ const PurchasesList = () => {
 
       setData(result);
       setHasNextPage(result.length === pageSize);
-      setTotalPages(metaData?.totalPages || 1); 
-    } catch (err) {
+      setTotalPages(metaData?.totalPages || 1);
+    }
+    catch (err) {
       console.error(err);
-      setError('Failed to fetch data');
+
+      if (err?.response?.data?.message === "Unauthorized access") {
+        navigate('/signin');
+      } else {
+        setError('Failed to fetch data');
+      }
+
     } finally {
       setLoading(false);
     }
   };
 
+
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortOrder, pageSize]); // pageSize included
+  }, [currentPage, sortOrder, pageSize]);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -75,28 +84,29 @@ const PurchasesList = () => {
 
   const handlePageSizeChange = (size) => {
     setPageSize(size);
-    setCurrentPage(1); // Reset to first page on size change
+    setCurrentPage(1);
   };
 
-  const headers = ['ID', 'STATUS','PAYMENT STATUS', 'AMOUNT', 'SCHEME', 'GROUPORDERNO', 'CREATED AT'];
+  const headers = ['ID', 'INVESTMENT ACCOUNT', 'STATUS', 'PAYMENT STATUS', 'AMOUNT', 'SCHEME', 'GROUP ORDER NO', 'CREATED AT'];
 
   const renderRow = (item) => (
     <>
       <td className="px-6 py-3 text-blue-600 underline">
         <Link to={`/purchase-details/${item._id}`}>{item._id}</Link>
       </td>
+      <td className="px-6 py-3">{item?.username}</td>
       <td className="px-6 py-3">
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium 
             ${item.state === 'successful'
-            ? 'bg-green-100 text-green-600'
-            : item.state === 'processing'
-              ? 'bg-yellow-100 text-yellow-600'
-              : 'bg-red-100 text-red-600'
+              ? 'bg-green-100 text-green-600'
+              : item.state === 'processing'
+                ? 'bg-yellow-100 text-yellow-600'
+                : 'bg-red-100 text-red-600'
             }`}
         >
-          {item.status === 'successfull' ? 'Successfull'
-            : item.state === 'processing'? 'Processing'
+          {item.state === 'successfull' ? 'Successfull'
+            : item.state === 'processing' ? 'Processing'
               : 'Failed'}
         </span>
       </td>
@@ -105,19 +115,19 @@ const PurchasesList = () => {
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium 
             ${item.paymentStatus === 'success'
-            ? 'bg-green-100 text-green-600'
-            : item.paymentStatus === 'processing'
-              ? 'bg-yellow-100 text-yellow-600'
-              : 'bg-red-100 text-red-600'
+              ? 'bg-green-100 text-green-600'
+              : item.paymentStatus === 'processing'
+                ? 'bg-yellow-100 text-yellow-600'
+                : 'bg-red-100 text-red-600'
             }`}
         >
           {item.paymentStatus === 'success' ? 'Successful'
-            : item.paymentStatus === 'processing'? 'Processing'
+            : item.paymentStatus === 'processing' ? 'Processing'
               : 'Failed'}
         </span>
       </td>
       <td className="px-6 py-3">{item?.amount}</td>
-      <td className="px-6 py-3">{item?.scheme}</td>
+      <td className="px-6 py-3">{item?.plan_name}</td>
       <td className="px-6 py-3">{item?.groupOrderNo}</td>
       <td className="px-6 py-3">
         {item.created_at
@@ -151,7 +161,8 @@ const PurchasesList = () => {
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
-          totalPages={totalPages} 
+          totalPages={totalPages}
+          searchPlaceholder="Search by Name ..."
         />
       </div>
     </div>

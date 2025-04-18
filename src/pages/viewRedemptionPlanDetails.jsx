@@ -2,34 +2,33 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
 
-
-const RedemptionDetails = () => {
+const RedemptionPlanDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [redemptionData, setRedemptionData] = useState(null);
+  const [redemptionPlanData, setRedemptionPlanData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchRedemptionDetails = async () => {
+  const fetchRedemptionPlanDetails = async () => {
     try {
-      const response = await get(`/mutualFund/redeem/${id}`); // Update this endpoint if needed
+      const response = await get(`/swp/${id}`);
       const result = response?.data?.result;
 
       if (result) {
-        setRedemptionData(result);
+        setRedemptionPlanData(result);
       } else {
-        setError('No redemption data found for this ID.');
+        setError('No redemption plan data found for this ID.');
       }
     } catch (err) {
       console.error(err);
-      setError('Failed to fetch redemption details.');
+      setError('Failed to fetch redemption plan details.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchRedemptionDetails();
+    fetchRedemptionPlanDetails();
   }, [id]);
 
   if (loading) return <p className="text-center py-10">Loading...</p>;
@@ -39,7 +38,7 @@ const RedemptionDetails = () => {
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Redemption Details</h2>
+        <h2 className="text-2xl font-bold">Redemption Plan Details</h2>
         <button
           onClick={() => navigate(-1)}
           className="text-sm text-blue-600 hover:underline"
@@ -52,38 +51,38 @@ const RedemptionDetails = () => {
       <div className="bg-white rounded-xl shadow-md overflow-hidden border">
         <table className="w-full text-sm text-left">
           <tbody>
-            <TableRow label="REDEMPTION ID" value={redemptionData?._id || 'N/A'} />
-            <TableRow label="INVESTMENT ACCOUNT" value={redemptionData?.username} />
+            <TableRow label="REDEMPTION PLAN ID" value={redemptionPlanData?._id || 'N/A'} />
+            <TableRow label="INVESTMENT ACCOUNT" value={redemptionPlanData?.username} />
             <TableRow
-              label="STATUS"
+              label="Status"
               value={
                 <span
                   className={`px-2 py-1 text-xs rounded-full font-medium 
-                                      ${redemptionData?.state === 'successful'
+                    ${redemptionPlanData?.state === 'successful'
                       ? 'bg-green-100 text-green-600'
-                      : redemptionData?.state === 'processing'
+                      : redemptionPlanData?.state === 'processing'
                         ? 'bg-yellow-100 text-yellow-600'
                         : 'bg-red-100 text-red-600'
                     }`}
                 >
-                  {redemptionData?.state === 'successful'
+                  {redemptionPlanData?.state === 'successful'
                     ? 'Successful'
-                    : redemptionData?.state === 'processing'
+                    : redemptionPlanData?.state === 'processing'
                       ? 'Processing'
                       : 'Failed'}
                 </span>
               }
             />
-            <TableRow label="FOLIO NUMBER" value={redemptionData?.folio_number || 'N/A'} />
-            <TableRow label="CAN" value={redemptionData?.can || 'N/A'} />
-            <TableRow label="AMOUNT" value={redemptionData?.amount || 'N/A'} />
-            <TableRow label="SCHEME" value={redemptionData?.plan_name || 'N/A'} />
-            <TableRow label="GROUP ORDER NO" value={redemptionData?.groupOrderNo || 'N/A'} />
+            <TableRow label="FOLIO NUMBER" value={redemptionPlanData?.folio_number || 'N/A'} />
+            <TableRow label="AMOUNT" value={redemptionPlanData?.can || 'N/A'} />
+            <TableRow label="AMOUNT" value={redemptionPlanData?.amount || 'N/A'} />
+            <TableRow label="SCHEME" value={redemptionPlanData?.plan_name || 'N/A'} />
+            <TableRow label="GROUP ORDER NO" value={redemptionPlanData?.groupOrderNo || 'N/A'} />
             <TableRow
               label="Created At"
               value={
-                redemptionData?.created_at
-                  ? new Date(redemptionData.created_at).toLocaleDateString('en-US', {
+                redemptionPlanData?.created_at
+                  ? new Date(redemptionPlanData.created_at).toLocaleDateString('en-US', {
                     dateStyle: 'long',
                   })
                   : 'N/A'
@@ -107,4 +106,4 @@ const TableRow = ({ label, value }) => (
   </tr>
 );
 
-export default RedemptionDetails;
+export default RedemptionPlanDetails;

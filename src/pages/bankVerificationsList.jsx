@@ -1,19 +1,21 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
 
 const BankVerifications = () => {
-const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageSize, setPageSize] = useState(5); 
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
+
 
   const fetchData = async () => {
     try {
@@ -26,10 +28,17 @@ const [data, setData] = useState([]);
 
       setData(result);
       setHasNextPage(result.length === pageSize);
-      setTotalPages(metaData?.totalPages || 1); 
-    } catch (err) {
+      setTotalPages(metaData?.totalPages || 1);
+    }
+    catch (err) {
       console.error(err);
-      setError('Failed to fetch data');
+
+      if (err?.response?.data?.message === "Unauthorized access") {
+        navigate('/signin');
+      } else {
+        setError('Failed to fetch data');
+      }
+
     } finally {
       setLoading(false);
     }
@@ -37,7 +46,7 @@ const [data, setData] = useState([]);
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortOrder, pageSize]); // pageSize included
+  }, [currentPage, sortOrder, pageSize]);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -76,11 +85,11 @@ const [data, setData] = useState([]);
 
   const handlePageSizeChange = (size) => {
     setPageSize(size);
-    setCurrentPage(1); // Reset to first page on size change
+    setCurrentPage(1);
   };
 
-  const headers = ['ID', 'INVESTOR NAME', 'BANk NAME', 'ACCOUNT TYPE', 'VERIFICATION STATUS'];
-  
+  const headers = ['ID', 'INVESTOR NAME', 'BANK NAME', 'ACCOUNT TYPE', 'VERIFICATION STATUS', 'CREATED AT'];
+
   const searchFunction = (item, searchTerm) => {
     const search = searchTerm.toLowerCase();
     return item.name?.toLowerCase().includes(search);
@@ -98,13 +107,21 @@ const [data, setData] = useState([]);
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium ${item.bank_account_verified?.[0]?.account_status === 'VALID'
             ? 'bg-green-100 text-green-600'
-              : 'bg-red-100 text-red-600'
+            : 'bg-red-100 text-red-600'
             }`}
         >
-          {item.bank_account_verified?.[0]?.account_status ==='VALID'?'Completed':'Failed'}
+          {item.bank_account_verified?.[0]?.account_status === 'VALID' ? 'Completed' : 'Failed'}
         </span>
       </td>
-     
+      <td className="px-6 py-3">
+        {item.bank_account_verified?.[0]?.created_at
+          ? new Date(item.bank_account_verified[0].created_at).toLocaleDateString('en-US', {
+            dateStyle: 'long',
+          })
+          : 'N/A'}
+      </td>
+
+
     </>
   );
 
@@ -115,8 +132,8 @@ const [data, setData] = useState([]);
     <div className="w-full min-h-screen py-6 bg-white">
       <h1 className="text-2xl font-bold mb-4 px-6">Bank account verifications</h1>
       <div className="px-6">
-        
-      <Table
+
+        <Table
           headers={headers}
           data={data}
           renderRow={renderRow}
@@ -131,7 +148,8 @@ const [data, setData] = useState([]);
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
-          totalPages={totalPages} 
+          totalPages={totalPages}
+          searchPlaceholder="Search by Name ..."
         />
       </div>
     </div>

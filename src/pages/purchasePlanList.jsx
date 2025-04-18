@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
 
@@ -11,8 +11,9 @@ const PurchasePlanList = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageSize, setPageSize] = useState(5); 
-   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [totalPages, setTotalPages] = useState(1);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
@@ -26,9 +27,16 @@ const PurchasePlanList = () => {
       setData(result);
       setHasNextPage(result.length === pageSize);
       setTotalPages(metaData?.totalPages || 1);
-    } catch (err) {
+    }
+    catch (err) {
       console.error(err);
-      setError('Failed to fetch data');
+
+      if (err?.response?.data?.message === "Unauthorized access") {
+        navigate('/signin');
+      } else {
+        setError('Failed to fetch data');
+      }
+
     } finally {
       setLoading(false);
     }
@@ -36,7 +44,7 @@ const PurchasePlanList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortOrder, pageSize]); // pageSize included
+  }, [currentPage, sortOrder, pageSize]); 
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -75,7 +83,7 @@ const PurchasePlanList = () => {
 
   const handlePageSizeChange = (size) => {
     setPageSize(size);
-    setCurrentPage(1); // Reset to first page on size change
+    setCurrentPage(1); 
   };
 
   const headers = ['ID', 'Status', 'Name', 'PAN', 'Email', 'Mobile', 'Created At'];
@@ -87,11 +95,10 @@ const PurchasePlanList = () => {
       </td>
       <td className="px-6 py-3">
         <span
-          className={`px-2 py-1 text-xs rounded-full font-medium ${
-            item.status === 'successful'
+          className={`px-2 py-1 text-xs rounded-full font-medium ${item.status === 'successful'
               ? 'bg-green-100 text-green-600'
               : 'bg-red-100 text-red-600'
-          }`}
+            }`}
         >
           {item.status === 'successful' ? 'Successful' : 'Failed'}
         </span>
@@ -103,8 +110,8 @@ const PurchasePlanList = () => {
       <td className="px-6 py-3">
         {item.created_at
           ? new Date(item.created_at).toLocaleDateString('en-US', {
-              dateStyle: 'long',
-            })
+            dateStyle: 'long',
+          })
           : 'N/A'}
       </td>
     </>
@@ -133,6 +140,7 @@ const PurchasePlanList = () => {
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
+          searchPlaceholder="Search by Name ..."
         />
       </div>
     </div>

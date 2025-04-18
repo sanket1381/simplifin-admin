@@ -13,7 +13,7 @@ const SignInForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Reset previous errors
+    
     setEmailError("");
     setPasswordError("");
 

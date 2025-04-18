@@ -52,9 +52,10 @@ const PurchaseDetails = () => {
             <div className="bg-white rounded-xl shadow-md overflow-hidden border">
                 <table className="w-full text-sm text-left">
                     <tbody>
-                        <TableRow label="Mandate ID" value={purchaseData?._id || 'N/A'} />
+                        <TableRow label="MANDATE ID" value={purchaseData?._id || 'N/A'} />
+                        <TableRow label="INVESTMENT ACCOUNT" value={purchaseData?.username || 'N/A'} />
                         <TableRow
-                            label="Status"
+                            label="STATUS"
                             value={
                                 <span
                                     className={`px-2 py-1 text-xs rounded-full font-medium 
@@ -93,12 +94,12 @@ const PurchaseDetails = () => {
                                 </span>
                             }
                         />
-
+                        <TableRow label="CAN" value={purchaseData?.can || 'N/A'} />
                         <TableRow label="AMOUNT" value={purchaseData?.amount || 'N/A'} />
-                        <TableRow label="SCHEME" value={purchaseData?.scheme || 'N/A'} />
-                        <TableRow label="GROUPORDERNO" value={purchaseData?.groupOrderNo || 'N/A'} />
+                        <TableRow label="SCHEME" value={purchaseData?.plan_name || 'N/A'} />
+                        <TableRow label="GROUP ORDER NO" value={purchaseData?.groupOrderNo || 'N/A'} />
                         <TableRow
-                            label="Created At"
+                            label="CREATED AT"
                             value={
                                 purchaseData?.created_at
                                     ? new Date(purchaseData.created_at).toLocaleDateString('en-US', {

@@ -39,7 +39,7 @@ const BankMandateDetails = () => {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Mandate Details</h2>
+          <h2 className="text-2xl font-bold"> Bank Mandates</h2>
           <button
             onClick={() => navigate(-1)}
             className="text-sm text-blue-600 hover:underline"
@@ -52,18 +52,18 @@ const BankMandateDetails = () => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden border">
           <table className="w-full text-sm text-left">
             <tbody>
-              <TableRow label="Mandate ID" value={mandateData?._id || 'N/A'} />
-              <TableRow label="Investor" value={mandateData?.investor} />
+              <TableRow label="MANDATE ID" value={mandateData?._id || 'N/A'} />
+              <TableRow label="INVESTOR" value={mandateData?.username} />
               <TableRow label="MMRN" value={mandateData?.mmrn || 'N/A'} />
-              <TableRow label="Reference Number" value={mandateData?.uniqueRefNo || 'N/A'} />
+              <TableRow label="REFRENCE NUMBER" value={mandateData?.uniqueRefNo || 'N/A'} />
               <TableRow
-                label="Status"
+                label="STATUS"
                 value={
                   ""
                 }
               />
               <TableRow
-                label=" Last Updated "
+                label=" LAST UPDATED "
                 value={
                   ""
                 }
