@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService'; 
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 
 const BankMandateDetails = () => {
@@ -32,7 +33,10 @@ const BankMandateDetails = () => {
       fetchMandateDetails();
     }, [id]);
   
-    if (loading) return <p className="text-center py-10">Loading...</p>;
+    if (loading)  return (
+      <div>
+        <LoadingSpinner />
+      </div>);
     if (error) return <p className="text-red-500 text-center py-10">{error}</p>;
   
     return (

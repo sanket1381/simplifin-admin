@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const BankVerifications = () => {
   const [data, setData] = useState([]);
@@ -98,7 +99,7 @@ const BankVerifications = () => {
   const renderRow = (item) => (
     <>
       <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/bank-details/${item._id}`}>{item._id}</Link>
+        <Link to={`/bank-details/${item.bank_account_verified?.[0]?._id}`}>{item.bank_account_verified?.[0]?._id}</Link>
       </td>
       <td className="px-6 py-3">{item.bank_account_verified?.[0]?.account_holder_name || 'N/A'}</td>
       <td className="px-6 py-3">{item.bank_account_verified?.[0]?.bank_name || 'N/A'}</td>
@@ -125,7 +126,10 @@ const BankVerifications = () => {
     </>
   );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)  return (
+      <div>
+        <LoadingSpinner />
+      </div>);
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

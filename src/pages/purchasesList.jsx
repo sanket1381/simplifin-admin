@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const PurchasesList = () => {
   const [data, setData] = useState([]);
@@ -87,7 +88,7 @@ const PurchasesList = () => {
     setCurrentPage(1);
   };
 
-  const headers = ['ID', 'INVESTMENT ACCOUNT', 'STATUS', 'PAYMENT STATUS', 'AMOUNT', 'SCHEME', 'GROUP ORDER NO', 'CREATED AT'];
+  const headers = ['ID', 'USER NAME', 'STATUS', 'PAYMENT STATUS', 'AMOUNT', 'SCHEME', 'GROUP ORDER NO', 'CREATED AT'];
 
   const renderRow = (item) => (
     <>
@@ -98,32 +99,56 @@ const PurchasesList = () => {
       <td className="px-6 py-3">
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.state === 'successful'
-              ? 'bg-green-100 text-green-600'
-              : item.state === 'processing'
-                ? 'bg-yellow-100 text-yellow-600'
-                : 'bg-red-100 text-red-600'
+            ${item.state
+              ? item.state.toLowerCase().trim() === 'successful'
+                ? 'bg-green-100 text-green-600'
+                : item.state.toLowerCase().trim() === 'pending'
+                  ? 'bg-yellow-100 text-yellow-600'
+                  : item.state.toLowerCase().trim() === 'submitted'
+                    ? 'bg-blue-100 text-blue-600'
+                    : item.state.toLowerCase().trim() === 'failed'
+                      ? 'bg-red-100 text-red-600'
+                      : ''
+              : ''
             }`}
         >
-          {item.state === 'successfull' ? 'Successfull'
-            : item.state === 'processing' ? 'Processing'
-              : 'Failed'}
+          {item.state
+            ? item.state.toLowerCase().trim() === 'successful'
+              ? 'Successful'
+              : item.state.toLowerCase().trim() === 'pending'
+                ? 'Pending'
+                : item.state.toLowerCase().trim() === 'submitted'
+                  ? 'Submitted'
+                  : item.state.toLowerCase().trim() === 'failed'
+                    ? 'Failed'
+                    : ''
+            : ''}
         </span>
       </td>
 
       <td className="px-6 py-3">
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.paymentStatus === 'success'
-              ? 'bg-green-100 text-green-600'
-              : item.paymentStatus === 'processing'
-                ? 'bg-yellow-100 text-yellow-600'
-                : 'bg-red-100 text-red-600'
+            ${item.paymentStatus
+              ? item.paymentStatus.toLowerCase().trim() === 'success'
+                ? 'bg-green-100 text-green-600'
+                : item.paymentStatus.toLowerCase().trim() === 'initiated'
+                  ? 'bg-blue-100 text-blue-600'
+                  : item.paymentStatus.toLowerCase().trim() === 'failed'
+                    ? 'bg-red-100 text-red-600'
+                    : ''
+              : ''
             }`}
         >
-          {item.paymentStatus === 'success' ? 'Successful'
-            : item.paymentStatus === 'processing' ? 'Processing'
-              : 'Failed'}
+          {item.paymentStatus
+            ? item.paymentStatus.toLowerCase().trim() === 'success'
+              ? 'Successful'
+              : item.paymentStatus.toLowerCase().trim() === 'initiated'
+                ? 'Initiated'
+                : item.paymentStatus.toLowerCase().trim() === 'failed'
+                  ? 'Failed'
+                  : ''
+            : ''}
         </span>
       </td>
       <td className="px-6 py-3">{item?.amount}</td>
@@ -139,7 +164,10 @@ const PurchasesList = () => {
     </>
   );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return (
+      <div>
+        <LoadingSpinner />
+      </div>);
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

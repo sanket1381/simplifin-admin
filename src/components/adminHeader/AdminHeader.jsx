@@ -7,7 +7,7 @@ const AdminHeader = ({ toggleSidebar }) => {
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
-    navigate('/folios', { replace: true });
+    navigate('/user-details', { replace: true });
   };
 
   const handleLogout = () => {

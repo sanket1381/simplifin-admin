@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const BankMandatesList = () => {
   const [data, setData] = useState([]);
@@ -15,6 +16,25 @@ const BankMandatesList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
+  const regStatusMapping = {
+    RQ: 'Pending',
+    CL: 'Cancelled',
+    PA: 'Confirmed',
+    PR: 'Rejected',
+  };
+
+  const aggrStatusMapping = {
+    RQ: 'Requested',
+    RA: 'Aggregator Rejected',
+    PA: 'Confirmed',
+    PR: 'Rejected',
+    SE: 'Send to Aggregator',
+    PS: 'Request Acknowledged by Aggregator',
+    PF: 'Request Rejected By Aggregator',
+    PE: 'Pending',
+    AC: 'Request Cancelled by Aggregator',
+    AK: 'Aggregator Accepted',
+  };
 
   const fetchData = async () => {
     try {
@@ -88,7 +108,7 @@ const BankMandatesList = () => {
     setCurrentPage(1);
   };
 
-  const headers = ['INVESTORS', 'MANDATE ID', 'ID', 'REFRENCE', 'STATUS', 'LAST UPDATED',];
+  const headers = ['INVESTORS', 'MANDATE ID', 'ID', 'REFERENCE', 'REG STATUS', 'AGGR STATUS', 'LAST UPDATED',];
 
   const renderRow = (item) => (
     <>
@@ -99,13 +119,32 @@ const BankMandatesList = () => {
         <Link to={`/mandateDetails/${item._id}`}>{item._id}</Link>
       </td>
       <td className="px-6 py-3">{item?.uniqueRefNo}</td>
-      <td className="px-6 py-3">{item?.status}</td>
+      <td className="px-6 py-3">
+        <span
+          className={`px-2 py-1 text-xs rounded-full font-medium
+            ${item?.mmrnRegStatus === 'CL' || item?.mmrnRegStatus === 'PR'
+              ? 'bg-red-100 text-red-600'
+              : item?.mmrnRegStatus === 'RQ'
+                ? 'bg-yellow-100 text-yellow-600'
+                : item?.mmrnRegStatus === 'PA'
+                  ? 'bg-green-100 text-green-600'
+                  : 'bg-gray-100 text-gray-600'
+            }`}
+        >
+          {regStatusMapping[item?.mmrnRegStatus] || item?.mmrnRegStatus || ''}
+        </span>
+      </td>
+      <td className="px-6 py-3">
+        {aggrStatusMapping[item?.mmrnAggrStatus] || item?.mmrnAggrStatus || ''}
+      </td>
       <td className="px-6 py-3">{item?.update}</td>
-
     </>
   );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return (
+    <div>
+      <LoadingSpinner />
+    </div>);
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

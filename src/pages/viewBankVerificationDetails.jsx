@@ -1,29 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const UserBankDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+    const fetchBankDetails = async () => {
+        try {
+            const response = await get(`/kyc/bankaccount/${id}`);
+            const result = response?.data?.result;
+            if (result) {
+                setUserData(result);
+            } else {
+                setError('No bank data found for this ID.');
+            }
+        } catch (err) {
+            console.error('Error fetching user data:', err);
+            setError('Failed to fetch bank details.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await get('/kyc/bankaccount/list');
-                const user = response.data.result.find(item => item._id === id);
-                setUserData(user);
-            } catch (err) {
-                console.error('Error fetching user data:', err);
-            }
-        };
-
-        fetchUserData();
+        fetchBankDetails();
     }, [id]);
 
-    if (!userData) {
-        return <p className="px-6 py-4">Loading...</p>;
-    }
+    if (loading)  return (
+      <div>
+        <LoadingSpinner />
+      </div>);
+    if (error) return <p className="px-6 py-4 text-red-500">{error}</p>;
+    if (!userData) return null;
 
     const bank = userData.bank_account_verified?.[0];
 
@@ -45,20 +58,19 @@ const UserBankDetails = () => {
                 <table className="w-full text-sm text-left">
                     <tbody>
                         <TableRow label="ID" value={userData._id} />
-                        <TableRow label="INVESTOR NAME" value={bank.bank_name} />
-                        <TableRow label="BANK NAME" value={bank.account_holder_name} />
-                        <TableRow label="ACCOUNT TYPE" value={bank.type} />
-
+                        <TableRow label="INVESTOR NAME" value={bank?.bank_name || 'N/A'} />
+                        <TableRow label="BANK NAME" value={bank?.account_holder_name || 'N/A'} />
+                        <TableRow label="ACCOUNT TYPE" value={bank?.type || 'N/A'} />
                         <TableRow
-                            label=" VERIFICATION STATUS"
+                            label="VERIFICATION STATUS"
                             value={
                                 <span
-                                    className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${bank.account_status === 'VALID'
+                                    className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${bank?.account_status === 'VALID'
                                         ? 'bg-green-100 text-green-600'
                                         : 'bg-red-100 text-red-600'
                                         }`}
                                 >
-                                    {bank.account_status === 'VALID' ? 'Completed' : 'Failed'}
+                                    {bank?.account_status === 'VALID' ? 'Completed' : 'Failed'}
                                 </span>
                             }
                         />
@@ -91,4 +103,4 @@ const TableRow = ({ label, value }) => (
 );
 
 
-export default UserBankDetails
+export default UserBankDetails;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 
 const PurchaseDetails = () => {
@@ -32,7 +33,10 @@ const PurchaseDetails = () => {
         fetchPurchaseDetails();
     }, [id]);
 
-    if (loading) return <p className="text-center py-10">Loading...</p>;
+    if (loading) return (
+      <div>
+        <LoadingSpinner />
+      </div>);
     if (error) return <p className="text-red-500 text-center py-10">{error}</p>;
 
     return (
@@ -52,46 +56,66 @@ const PurchaseDetails = () => {
             <div className="bg-white rounded-xl shadow-md overflow-hidden border">
                 <table className="w-full text-sm text-left">
                     <tbody>
-                        <TableRow label="MANDATE ID" value={purchaseData?._id || 'N/A'} />
-                        <TableRow label="INVESTMENT ACCOUNT" value={purchaseData?.username || 'N/A'} />
+                        <TableRow label="ID" value={purchaseData?._id || 'N/A'} />
+                        <TableRow label="USER NAME" value={purchaseData?.username || 'N/A'} />
                         <TableRow
                             label="STATUS"
                             value={
-                                <span
-                                    className={`px-2 py-1 text-xs rounded-full font-medium 
-                                      ${purchaseData?.state === 'successful'
-                                            ? 'bg-green-100 text-green-600'
-                                            : purchaseData?.state === 'processing'
-                                                ? 'bg-yellow-100 text-yellow-600'
-                                                : 'bg-red-100 text-red-600'
-                                        }`}
-                                >
-                                    {purchaseData?.state === 'successful'
-                                        ? 'Successful'
-                                        : purchaseData?.state === 'processing'
-                                            ? 'Processing'
-                                            : 'Failed'}
-                                </span>
+                                purchaseData?.state
+                                    ? (
+                                        <span
+                                            className={`px-2 py-1 text-xs rounded-full font-medium 
+                                              ${purchaseData.state.toLowerCase().trim() === 'successful'
+                                                    ? 'bg-green-100 text-green-600'
+                                                    : purchaseData.state.toLowerCase().trim() === 'pending'
+                                                        ? 'bg-yellow-100 text-yellow-600'
+                                                        : purchaseData.state.toLowerCase().trim() === 'submitted'
+                                                            ? 'bg-blue-100 text-blue-600'
+                                                            : purchaseData.state.toLowerCase().trim() === 'failed'
+                                                                ? 'bg-red-100 text-red-600'
+                                                                : ''
+                                            }`}
+                                        >
+                                            {purchaseData.state.toLowerCase().trim() === 'successful'
+                                                ? 'Successful'
+                                                : purchaseData.state.toLowerCase().trim() === 'pending'
+                                                    ? 'Pending'
+                                                    : purchaseData.state.toLowerCase().trim() === 'submitted'
+                                                        ? 'Submitted'
+                                                        : purchaseData.state.toLowerCase().trim() === 'failed'
+                                                            ? 'Failed'
+                                                            : ''}
+                                        </span>
+                                    )
+                                    : ''
                             }
                         />
                         <TableRow
                             label="PAYMENT STATUS"
                             value={
-                                <span
-                                    className={`px-2 py-1 text-xs rounded-full font-medium 
-                                      ${purchaseData?.paymentStatus === 'success'
-                                            ? 'bg-green-100 text-green-600'
-                                            : purchaseData?.paymentStatus === 'processing'
-                                                ? 'bg-yellow-100 text-yellow-600'
-                                                : 'bg-red-100 text-red-600'
-                                        }`}
-                                >
-                                    {purchaseData?.paymentStatus === 'success'
-                                        ? 'Successful'
-                                        : purchaseData?.paymentStatus === 'processing'
-                                            ? 'Processing'
-                                            : 'Failed'}
-                                </span>
+                                purchaseData?.paymentStatus
+                                    ? (
+                                        <span
+                                            className={`px-2 py-1 text-xs rounded-full font-medium 
+                                              ${purchaseData.paymentStatus.toLowerCase().trim() === 'success'
+                                                    ? 'bg-green-100 text-green-600'
+                                                    : purchaseData.paymentStatus.toLowerCase().trim() === 'initiated'
+                                                        ? 'bg-blue-100 text-blue-600'
+                                                        : purchaseData.paymentStatus.toLowerCase().trim() === 'failed'
+                                                            ? 'bg-red-100 text-red-600'
+                                                            : ''
+                                            }`}
+                                        >
+                                            {purchaseData.paymentStatus.toLowerCase().trim() === 'success'
+                                                ? 'Successful'
+                                                : purchaseData.paymentStatus.toLowerCase().trim() === 'initiated'
+                                                    ? 'Initiated'
+                                                    : purchaseData.paymentStatus.toLowerCase().trim() === 'failed'
+                                                        ? 'Failed'
+                                                        : ''}
+                                        </span>
+                                    )
+                                    : ''
                             }
                         />
                         <TableRow label="CAN" value={purchaseData?.can || 'N/A'} />
@@ -108,8 +132,6 @@ const PurchaseDetails = () => {
                                     : 'N/A'
                             }
                         />
-
-
                     </tbody>
                 </table>
             </div>
@@ -128,4 +150,4 @@ const TableRow = ({ label, value }) => (
     </tr>
 );
 
-export default PurchaseDetails
+export default PurchaseDetails;

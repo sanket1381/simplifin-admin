@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { post } from "../services/commonService";
 
 const SignInForm = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +13,6 @@ const SignInForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
     setEmailError("");
     setPasswordError("");
 
@@ -32,18 +31,17 @@ const SignInForm = () => {
     if (hasError) return;
 
     try {
-      const res = await axios.post(
-        "https://devapi.simplifin.in/auth/signin",
+      const res = await post(
+        "/auth/signin",
         {
           email,
           password,
           type: "normalLogin",
+          role: "admin",
         },
         {
-          headers: {
-            "Content-Type": "application/json",
-            isvalidrequest: "simplifinAuth123",
-          },
+          "Content-Type": "application/json",
+          isvalidrequest: "simplifinAuth123",
         }
       );
 
@@ -84,7 +82,7 @@ const SignInForm = () => {
             transition={{ delay: 0.2 }}
             className="text-4xl font-bold text-gray-800 mb-2 text-center"
           >
-            Simplifint
+            Simplifin
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
@@ -114,8 +112,9 @@ const SignInForm = () => {
                 type="email"
                 value={email}
                 placeholder="you@example.com"
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none ${emailError ? "border-red-500" : "border-gray-300"
-                  }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none ${
+                  emailError ? "border-red-500" : "border-gray-300"
+                }`}
               />
               {emailError && (
                 <span className="text-red-500 text-sm mt-1 block">
@@ -136,8 +135,9 @@ const SignInForm = () => {
                 type="password"
                 value={password}
                 placeholder="••••••••"
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none ${passwordError ? "border-red-500" : "border-gray-300"
-                  }`}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none ${
+                  passwordError ? "border-red-500" : "border-gray-300"
+                }`}
               />
               {passwordError && (
                 <span className="text-red-500 text-sm mt-1 block">

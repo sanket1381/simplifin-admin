@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 
 const RedemptionDetails = () => {
@@ -12,7 +13,7 @@ const RedemptionDetails = () => {
 
   const fetchRedemptionDetails = async () => {
     try {
-      const response = await get(`/mutualFund/redeem/${id}`); // Update this endpoint if needed
+      const response = await get(`/mutualFund/redeem/${id}`);
       const result = response?.data?.result;
 
       if (result) {
@@ -32,7 +33,10 @@ const RedemptionDetails = () => {
     fetchRedemptionDetails();
   }, [id]);
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (loading)  return (
+      <div>
+        <LoadingSpinner />
+      </div>);
   if (error) return <p className="text-red-500 text-center py-10">{error}</p>;
 
   return (
@@ -52,26 +56,46 @@ const RedemptionDetails = () => {
       <div className="bg-white rounded-xl shadow-md overflow-hidden border">
         <table className="w-full text-sm text-left">
           <tbody>
-            <TableRow label="REDEMPTION ID" value={redemptionData?._id || 'N/A'} />
-            <TableRow label="INVESTMENT ACCOUNT" value={redemptionData?.username} />
+            <TableRow label="ID" value={redemptionData?._id || 'N/A'} />
+            <TableRow label="USER NAME" value={redemptionData?.username} />
             <TableRow
               label="STATUS"
               value={
-                <span
-                  className={`px-2 py-1 text-xs rounded-full font-medium 
-                                      ${redemptionData?.state === 'successful'
-                      ? 'bg-green-100 text-green-600'
-                      : redemptionData?.state === 'processing'
-                        ? 'bg-yellow-100 text-yellow-600'
-                        : 'bg-red-100 text-red-600'
-                    }`}
-                >
-                  {redemptionData?.state === 'successful'
-                    ? 'Successful'
-                    : redemptionData?.state === 'processing'
-                      ? 'Processing'
-                      : 'Failed'}
-                </span>
+                redemptionData?.state
+                  ? (
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full font-medium 
+                        ${redemptionData.state.toLowerCase().trim() === 'successful'
+                          ? 'bg-green-100 text-green-600'
+                          : redemptionData.state.toLowerCase().trim() === 'pending'
+                            ? 'bg-yellow-100 text-yellow-600'
+                            : redemptionData.state.toLowerCase().trim() === 'submitted'
+                              ? 'bg-blue-100 text-blue-600'
+                              : redemptionData.state.toLowerCase().trim() === 'failed'
+                                ? 'bg-red-100 text-red-600'
+                                : redemptionData.state.toLowerCase().trim() === 'reversed'
+                                  ? 'bg-purple-100 text-purple-600'
+                                  : redemptionData.state.toLowerCase().trim() === 'cancelled'
+                                    ? 'bg-gray-200 text-gray-700'
+                                    : ''
+                        }`}
+                    >
+                      {redemptionData.state.toLowerCase().trim() === 'successful'
+                        ? 'Successful'
+                        : redemptionData.state.toLowerCase().trim() === 'pending'
+                          ? 'Pending'
+                          : redemptionData.state.toLowerCase().trim() === 'submitted'
+                            ? 'Submitted'
+                            : redemptionData.state.toLowerCase().trim() === 'failed'
+                              ? 'Failed'
+                              : redemptionData.state.toLowerCase().trim() === 'reversed'
+                                ? 'Reversed'
+                                : redemptionData.state.toLowerCase().trim() === 'cancelled'
+                                  ? 'Cancelled'
+                                  : ''}
+                    </span>
+                  )
+                  : ''
               }
             />
             <TableRow label="FOLIO NUMBER" value={redemptionData?.folio_number || 'N/A'} />

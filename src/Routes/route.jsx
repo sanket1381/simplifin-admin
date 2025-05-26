@@ -4,6 +4,7 @@ import AdminLayout from "../layout/AdminLayout";
 import SignInForm from "../pages/signIn";
 import KycRequests from "../pages/kycList";
 import FoliosList from "../pages/foliosList";
+import Folios from "../pages/Folios";
 import BankVerifications from "../pages/bankVerificationsList";
 import UserKycDetails from "../pages/viewkycDetails";
 import UserBankDetails from "../pages/viewBankVerificationDetails";
@@ -17,6 +18,10 @@ import PurchasePlanDetails from "../pages/viewPurchasePlanDetails";
 import PurchaseDetails from "../pages/viewPurchaseDetails";
 import RedemptionDetails from "../pages/viewRedemptionDetails";
 import RedemptionPlanDetails from "../pages/viewRedemptionPlanDetails";
+import AddressDetailsList from "../pages/addressDetailsList";
+import ViewAddressDetails from "../pages/viewAddressDetails";
+import UserDetailsList from "../pages/userDetailsList";
+import ViewUserDetails from "../pages/viewUserDetails";
 
 const routes = [
   {
@@ -33,13 +38,16 @@ const routes = [
     children: [
       {
         index: true,
-        element: <Navigate to="/folios" replace />,
+        element: <Navigate to="/user-details" replace />,
       },
       {
         path: "folios", 
         element: <FoliosList />,
       },
-     
+      {
+        path: "folios/details",
+        element: <Folios />,
+      },
       {
         path: "kyc-requests", 
         element: <KycRequests />,
@@ -53,6 +61,14 @@ const routes = [
         element: <UserKycDetails />,
       },
       {
+        path: "user-details",
+        element: <UserDetailsList />,
+      },
+      {
+        path: "user-details/:id",
+        element: <ViewUserDetails />,
+      },
+      {
         path: "bank-details/:id", 
         element: <UserBankDetails />,
       },
@@ -64,7 +80,14 @@ const routes = [
         path: "mandateDetails/:id", 
         element: <BankMandateDetails />,
       },
-    
+      {
+        path: "address-details",
+        element: <AddressDetailsList />,
+      },
+      {
+        path: "address-details/:id", 
+        element: <ViewAddressDetails />,
+      },
       {
         path: "purchases", 
         element: <PurchasesList />,

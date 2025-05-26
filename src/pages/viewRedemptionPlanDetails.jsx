@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const RedemptionPlanDetails = () => {
   const { id } = useParams();
@@ -31,7 +32,10 @@ const RedemptionPlanDetails = () => {
     fetchRedemptionPlanDetails();
   }, [id]);
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (loading)  return (
+      <div>
+        <LoadingSpinner />
+      </div>);
   if (error) return <p className="text-red-500 text-center py-10">{error}</p>;
 
   return (
@@ -51,26 +55,42 @@ const RedemptionPlanDetails = () => {
       <div className="bg-white rounded-xl shadow-md overflow-hidden border">
         <table className="w-full text-sm text-left">
           <tbody>
-            <TableRow label="REDEMPTION PLAN ID" value={redemptionPlanData?._id || 'N/A'} />
-            <TableRow label="INVESTMENT ACCOUNT" value={redemptionPlanData?.username} />
+            <TableRow label="ID" value={redemptionPlanData?._id || 'N/A'} />
+            <TableRow label="USER NAME" value={redemptionPlanData?.username} />
             <TableRow
               label="Status"
               value={
-                <span
-                  className={`px-2 py-1 text-xs rounded-full font-medium 
-                    ${redemptionPlanData?.state === 'successful'
-                      ? 'bg-green-100 text-green-600'
-                      : redemptionPlanData?.state === 'processing'
-                        ? 'bg-yellow-100 text-yellow-600'
-                        : 'bg-red-100 text-red-600'
-                    }`}
-                >
-                  {redemptionPlanData?.state === 'successful'
-                    ? 'Successful'
-                    : redemptionPlanData?.state === 'processing'
-                      ? 'Processing'
-                      : 'Failed'}
-                </span>
+                redemptionPlanData?.state
+                  ? (
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full font-medium 
+                        ${redemptionPlanData.state.toLowerCase().trim() === 'active'
+                          ? 'bg-green-100 text-green-600'
+                          : redemptionPlanData.state.toLowerCase().trim() === 'created'
+                            ? 'bg-blue-100 text-blue-600'
+                            : redemptionPlanData.state.toLowerCase().trim() === 'failed'
+                              ? 'bg-red-100 text-red-600'
+                              : redemptionPlanData.state.toLowerCase().trim() === 'completed'
+                                ? 'bg-green-200 text-green-700'
+                                : redemptionPlanData.state.toLowerCase().trim() === 'cancelled'
+                                  ? 'bg-gray-200 text-gray-700'
+                                  : ''
+                      }`}
+                    >
+                      {redemptionPlanData.state.toLowerCase().trim() === 'active'
+                        ? 'Active'
+                        : redemptionPlanData.state.toLowerCase().trim() === 'created'
+                          ? 'Created'
+                          : redemptionPlanData.state.toLowerCase().trim() === 'failed'
+                            ? 'Failed'
+                            : redemptionPlanData.state.toLowerCase().trim() === 'completed'
+                              ? 'Completed'
+                              : redemptionPlanData.state.toLowerCase().trim() === 'cancelled'
+                                ? 'Cancelled'
+                                : ''}
+                    </span>
+                  )
+                  : ''
               }
             />
             <TableRow label="FOLIO NUMBER" value={redemptionPlanData?.folio_number || 'N/A'} />

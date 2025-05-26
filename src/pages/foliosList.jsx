@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link ,useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const FoliosList = () => {
   const [data, setData] = useState([]);
@@ -11,37 +12,34 @@ const FoliosList = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageSize, setPageSize] = useState(10); 
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
-  const fetchData = async () => { 
-    
+  const fetchData = async () => {
     try {
       setLoading(true);
       const response = await get(
         `/mutualFund/folios/list?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
       );
       const result = response?.data?.result || [];
-      const metaData = response?.data?.metaData; 
+      const metaData = response?.data?.metaData;
 
       setData(result);
       setHasNextPage(result.length === pageSize);
-      setTotalPages(metaData?.totalPages || 1); 
-    } 
-    catch (err) {
+      setTotalPages(metaData?.totalPages || 1);
+    } catch (err) {
       console.error(err);
-      
-    if (err?.response?.data?.message === "Unauthorized access") {
-      navigate('/signin');
-    } else {
-      setError('Failed to fetch data');
+
+      if (err?.response?.data?.message === 'Unauthorized access') {
+        navigate('/signin');
+      } else {
+        setError('Failed to fetch data');
+      }
+    } finally {
+      setLoading(false);
     }
-    
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   useEffect(() => {
     fetchData();
@@ -87,25 +85,27 @@ const FoliosList = () => {
     setCurrentPage(1);
   };
 
-  const headers = ['  FOLIO NUMBER', 'INVESTMENT ACCOUNT','PAN', 'AMC'];
+  const headers = ['Folio Number', 'PAN', 'AMC'];
 
   const renderRow = (item) => (
     <>
-      {/* <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/kyc-details/${item._id}`}>{item._id}</Link>
-      </td> */}
       <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/kyc-details/${item?.folioNumber}`}>{item?.folioNumber}</Link>
+        {/* Navigate to Folios details page with dynamic parameters */}
+        <Link
+          to={`/folios/details?folioNumber=${item.folioNumber}&userId=${item.userId}&isin=${item.isin}`}
+        >
+          {item.folioNumber}
+        </Link>
       </td>
-      <td className="px-6 py-3">{item?.username}</td>
       <td className="px-6 py-3">{item.pan}</td>
       <td className="px-6 py-3">{item.schemeName}</td>
-      
-
     </>
   );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return (
+      <div>
+        <LoadingSpinner />
+      </div>);
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
@@ -127,7 +127,7 @@ const FoliosList = () => {
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
-          totalPages={totalPages} 
+          totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
         />
       </div>

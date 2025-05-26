@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link ,useNavigate} from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const RedemptionPlanList = () => {
   const [data, setData] = useState([]);
@@ -87,7 +88,7 @@ const RedemptionPlanList = () => {
     setCurrentPage(1); 
   };
 
-  const headers = ['ID', 'INVESTMENT ACCOUNT', 'STATUS','FOLIO NUMBER', 'AMOUNT', 'SCHEME', 'GROUP ORDER N0', 'CREATED At'];
+  const headers = ['ID', 'USER NAME', 'STATUS','FOLIO NUMBER', 'AMOUNT', 'SCHEME', 'GROUP ORDER N0', 'CREATED At'];
 
   const renderRow = (item) => (
     <>
@@ -98,16 +99,34 @@ const RedemptionPlanList = () => {
       <td className="px-6 py-3">
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.state === 'successful'
-              ? 'bg-green-100 text-green-600'
-              : item.state === 'processing'
-                ? 'bg-yellow-100 text-yellow-600'
-                : 'bg-red-100 text-red-600'
+            ${item.state
+              ? item.state.toLowerCase().trim() === 'active'
+                ? 'bg-green-100 text-green-600'
+                : item.state.toLowerCase().trim() === 'created'
+                  ? 'bg-blue-100 text-blue-600'
+                  : item.state.toLowerCase().trim() === 'failed'
+                    ? 'bg-red-100 text-red-600'
+                    : item.state.toLowerCase().trim() === 'completed'
+                      ? 'bg-green-200 text-green-700'
+                      : item.state.toLowerCase().trim() === 'cancelled'
+                        ? 'bg-gray-200 text-gray-700'
+                        : ''
+              : ''
             }`}
         >
-          {item.status === 'state' ? 'Successful'
-            : item.state === 'processing' ? 'Processing'
-              : 'Failed'}
+          {item.state
+            ? item.state.toLowerCase().trim() === 'active'
+              ? 'Active'
+              : item.state.toLowerCase().trim() === 'created'
+                ? 'Created'
+                : item.state.toLowerCase().trim() === 'failed'
+                  ? 'Failed'
+                  : item.state.toLowerCase().trim() === 'completed'
+                    ? 'Completed'
+                    : item.state.toLowerCase().trim() === 'cancelled'
+                      ? 'Cancelled'
+                      : ''
+            : ''}
         </span>
       </td>
       
@@ -125,7 +144,10 @@ const RedemptionPlanList = () => {
     </>
   );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return (
+      <div>
+        <LoadingSpinner />
+      </div>);
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

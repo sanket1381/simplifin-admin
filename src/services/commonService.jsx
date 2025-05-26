@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const URL = 'https://devapi.simplifin.in';
+const URL =import.meta.env.VITE_PUBLIC_API_URL || "http://localhost:3002";
 
 const api = axios.create({
   baseURL: URL,
@@ -22,4 +22,7 @@ api.interceptors.request.use(
 );
 
 // Common methods
-export const get = (url) => api.get(url);
+export const get = (url, config = {}) => api.get(url, config);
+
+export const post = (url, data, headers = {}) =>
+  api.post(url, data, { headers });

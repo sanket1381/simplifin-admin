@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link ,useNavigate} from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const KycRequests = () => {
   const [data, setData] = useState([]);
@@ -89,37 +90,48 @@ const KycRequests = () => {
 
   const headers = ['ID', 'Status', 'Name', 'PAN', 'Email', 'Mobile', 'Created At'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/kyc-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium ${
-            item.status === 'successful'
-              ? 'bg-green-100 text-green-600'
-              : 'bg-red-100 text-red-600'
-          }`}
-        >
-          {item.status === 'successful' ? 'Successful' : 'Failed'}
-        </span>
-      </td>
-      <td className="px-6 py-3">{item?.name}</td>
-      <td className="px-6 py-3">{item.pan}</td>
-      <td className="px-6 py-3">{item.email}</td>
-      <td className="px-6 py-3">{item.mobile?.number || 'N/A'}</td>
-      <td className="px-6 py-3">
-        {item.created_at
-          ? new Date(item.created_at).toLocaleDateString('en-US', {
-              dateStyle: 'long',
-            })
-          : 'N/A'}
-      </td>
-    </>
-  );
+  const renderRow = (item) => {
+    const statusColors = {
+      successful: 'bg-green-100 text-green-600',
+      pending: 'bg-yellow-100 text-yellow-600',
+      submitted: 'bg-blue-100 text-blue-600',
+      rejected: 'bg-red-100 text-red-600',
+      expired: 'bg-gray-100 text-gray-600',
+    };
 
-  if (loading) return <p>Loading...</p>;
+    return (
+      <>
+        <td className="px-6 py-3 text-blue-600 underline">
+          <Link to={`/kyc-details/${item._id}`}>{item._id}</Link>
+        </td>
+        <td className="px-6 py-3">
+          <span
+            className={`px-2 py-1 text-xs rounded-full font-medium ${
+              statusColors[item.status] || 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+          </span>
+        </td>
+        <td className="px-6 py-3">{item?.name}</td>
+        <td className="px-6 py-3">{item.pan}</td>
+        <td className="px-6 py-3">{item.email}</td>
+        <td className="px-6 py-3">{item.mobile?.number || 'N/A'}</td>
+        <td className="px-6 py-3">
+          {item.created_at
+            ? new Date(item.created_at).toLocaleDateString('en-US', {
+                dateStyle: 'long',
+              })
+            : 'N/A'}
+        </td>
+      </>
+    );
+  };
+
+  if (loading) return (
+      <div>
+        <LoadingSpinner />
+      </div>);
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

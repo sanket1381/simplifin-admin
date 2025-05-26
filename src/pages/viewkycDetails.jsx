@@ -1,17 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
+import { FiDownload, FiEye } from 'react-icons/fi';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const UserKycDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
 
+  const fetchMediaFile = async (mediaId) => {
+    try {
+      const response = await get(`/media/${mediaId}`, {
+        responseType: 'blob',
+      });
+      return response.data;
+    } catch (err) {
+      console.error('Error fetching media file:', err);
+      return null;
+    }
+  };
+
+  const handleView = async (mediaId) => {
+    const fileBlob = await fetchMediaFile(mediaId);
+    if (fileBlob) {
+      const fileURL = URL.createObjectURL(fileBlob);
+      window.open(fileURL, '_blank');
+    }
+  };
+
+  const handleDownload = async (mediaId) => {
+    const fileBlob = await fetchMediaFile(mediaId);
+    if (fileBlob) {
+      const link = document.createElement('a');
+      const fileURL = URL.createObjectURL(fileBlob);
+      link.href = fileURL;
+      link.download = `${mediaId}.jpg`;
+      link.click();
+      URL.revokeObjectURL(fileURL);
+    }
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await get('/kyc');
-        const user = response.data.result.find(item => item._id === id);
+        const response = await get(`/kyc/${id}`);
+        const user = response?.data?.result;
         setUserData(user);
       } catch (err) {
         console.error('Error fetching user data:', err);
@@ -22,7 +56,11 @@ const UserKycDetails = () => {
   }, [id]);
 
   if (!userData) {
-    return <p className="px-6 py-4">Loading...</p>;
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
@@ -47,10 +85,11 @@ const UserKycDetails = () => {
               label="Status"
               value={
                 <span
-                  className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${userData.status === 'successful'
+                  className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
+                    userData.status === 'successful'
                       ? 'bg-green-100 text-green-600'
                       : 'bg-red-100 text-red-600'
-                    }`}
+                  }`}
                 >
                   {userData.status === 'successful' ? 'Successful' : 'Failed'}
                 </span>
@@ -73,11 +112,121 @@ const UserKycDetails = () => {
                   : 'N/A'
               }
             />
-               <TableRow label="AADHAAR CARD" value={"" || 'N/A'} />
-               <TableRow label="PAN CARD" value={"" || 'N/A'} />
-               <TableRow label="PHOTO" value={""|| 'N/A'} />
-               <TableRow label="SIGNATURE" value={"" || 'N/A'} />
-               <TableRow label="CANCELLED CHEQUE" value={"" || 'N/A'} />
+            <TableRow
+              label="AADHAAR CARD"
+              value={
+                userData?.aadhaar_card ? (
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => handleView(userData.aadhaar_card)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiEye className="mr-1" /> View
+                    </button>
+                    <button
+                      onClick={() => handleDownload(userData.aadhaar_card)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiDownload className="mr-1" /> Download
+                    </button>
+                  </div>
+                ) : (
+                  'N/A'
+                )
+              }
+            />
+            <TableRow
+              label="PAN CARD"
+              value={
+                userData?.pan_card ? (
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => handleView(userData.pan_card)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiEye className="mr-1" /> View
+                    </button>
+                    <button
+                      onClick={() => handleDownload(userData.pan_card)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiDownload className="mr-1" /> Download
+                    </button>
+                  </div>
+                ) : (
+                  'N/A'
+                )
+              }
+            />
+            <TableRow
+              label="PHOTO"
+              value={
+                userData?.photo ? (
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => handleView(userData.photo)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiEye className="mr-1" /> View
+                    </button>
+                    <button
+                      onClick={() => handleDownload(userData.photo)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiDownload className="mr-1" /> Download
+                    </button>
+                  </div>
+                ) : (
+                  'N/A'
+                )
+              }
+            />
+            <TableRow
+              label="SIGNATURE"
+              value={
+                userData?.signature ? (
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => handleView(userData.signature)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiEye className="mr-1" /> View
+                    </button>
+                    <button
+                      onClick={() => handleDownload(userData.signature)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiDownload className="mr-1" /> Download
+                    </button>
+                  </div>
+                ) : (
+                  'N/A'
+                )
+              }
+            />
+            <TableRow
+              label="CANCELLED CHEQUE"
+              value={
+                userData?.bank_account_verified?.[0]?.cancelled_cheque ? (
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() => handleView(userData?.bank_account_verified[0].cancelled_cheque)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiEye className="mr-1" /> View
+                    </button>
+                    <button
+                      onClick={() => handleDownload(userData?.bank_account_verified[0].cancelled_cheque)}
+                      className="flex items-center text-blue-600 hover:underline"
+                    >
+                      <FiDownload className="mr-1" /> Download
+                    </button>
+                  </div>
+                ) : (
+                  'N/A'
+                )
+              }
+            />
             <TableRow
               label="Created At"
               value={
@@ -103,7 +252,6 @@ const TableRow = ({ label, value }) => (
     </td>
   </tr>
 );
-
 
 export default UserKycDetails;
 

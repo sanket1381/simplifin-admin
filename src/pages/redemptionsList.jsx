@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { get } from '../services/commonService';
 import Table from '../components/table/Table';
+import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const RedemptionsList = () => {
   const [data, setData] = useState([]);
@@ -86,7 +87,7 @@ const RedemptionsList = () => {
     setCurrentPage(1); 
   };
 
-  const headers = ['ID', 'INVESTMENT ACCOUNT', 'STATUS', 'FOLIO NUMBER','AMOUNT', 'SCHEME', 'GROUP ORDER N0', 'CREATED At'];
+  const headers = ['ID', 'USER NAME', 'STATUS', 'FOLIO NUMBER','AMOUNT', 'SCHEME', 'GROUP ORDER N0', 'CREATED At'];
 
   const renderRow = (item) => (
     <>
@@ -97,16 +98,38 @@ const RedemptionsList = () => {
       <td className="px-6 py-3">
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.state === 'successful'
-              ? 'bg-green-100 text-green-600'
-              : item.state === 'processing'
-                ? 'bg-yellow-100 text-yellow-600'
-                : 'bg-red-100 text-red-600'
+            ${item.state
+              ? item.state.toLowerCase().trim() === 'successful'
+                ? 'bg-green-100 text-green-600'
+                : item.state.toLowerCase().trim() === 'pending'
+                  ? 'bg-yellow-100 text-yellow-600'
+                  : item.state.toLowerCase().trim() === 'submitted'
+                    ? 'bg-blue-100 text-blue-600'
+                    : item.state.toLowerCase().trim() === 'failed'
+                      ? 'bg-red-100 text-red-600'
+                      : item.state.toLowerCase().trim() === 'reversed'
+                        ? 'bg-purple-100 text-purple-600'
+                        : item.state.toLowerCase().trim() === 'cancelled'
+                          ? 'bg-gray-200 text-gray-700'
+                          : ''
+              : ''
             }`}
         >
-          {item.status === 'state' ? 'Successful'
-            : item.state === 'processing' ? 'Processing'
-              : 'Failed'}
+          {item.state
+            ? item.state.toLowerCase().trim() === 'successful'
+              ? 'Successful'
+              : item.state.toLowerCase().trim() === 'pending'
+                ? 'Pending'
+                : item.state.toLowerCase().trim() === 'submitted'
+                  ? 'Submitted'
+                  : item.state.toLowerCase().trim() === 'failed'
+                    ? 'Failed'
+                    : item.state.toLowerCase().trim() === 'reversed'
+                      ? 'Reversed'
+                      : item.state.toLowerCase().trim() === 'cancelled'
+                        ? 'Cancelled'
+                        : ''
+            : ''}
         </span>
       </td>
       <td className="px-6 py-3">{item?.folio_number || 'N/A'}</td>
@@ -123,7 +146,10 @@ const RedemptionsList = () => {
     </>
   );
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return (
+      <div>
+        <LoadingSpinner />
+      </div>);
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

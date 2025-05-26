@@ -43,6 +43,9 @@ const AdminSidebar = ({ isSidebarOpen }) => {
 
         {openCustomerMenu && (
           <div className="mt-1 space-y-1">
+            <NavLink to="/user-details" className={linkClass}>
+              User Details
+            </NavLink>
             <NavLink to="/folios" className={linkClass}>
               Folios
             </NavLink>
@@ -51,6 +54,9 @@ const AdminSidebar = ({ isSidebarOpen }) => {
             </NavLink>
             <NavLink to="/bankAccount-verifications" className={linkClass}>
               Bank Account Verifications
+            </NavLink>
+            <NavLink to="/address-details" className={linkClass}>
+              Address Details
             </NavLink>
           </div>
         )}
