@@ -59,6 +59,10 @@ const UserBankDetails = () => {
                     <tbody>
                         <TableRow label="ID" value={userData._id} />
                         <TableRow label="INVESTOR NAME" value={bank?.bank_name || 'N/A'} />
+                        <TableRow label="ACCOUNT NUMBER" value={bank?.account_number || 'N/A'} /> 
+                        <TableRow label="IFSC CODE" value={bank?.ifsc_code || 'N/A'} />
+                        <TableRow label="MICR" value={bank?.micr || 'N/A'} />
+                        <TableRow label="INVESTOR NAME" value={bank?.bank_name || 'N/A'} />
                         <TableRow label="BANK NAME" value={bank?.account_holder_name || 'N/A'} />
                         <TableRow label="ACCOUNT TYPE" value={bank?.type || 'N/A'} />
                         <TableRow
@@ -67,10 +71,10 @@ const UserBankDetails = () => {
                                 <span
                                     className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${bank?.account_status === 'VALID'
                                         ? 'bg-green-100 text-green-600'
-                                        : 'bg-red-100 text-red-600'
+                                        : bank?.account_status === 'INVALID'? 'bg-red-100 text-red-600' : ''
                                         }`}
                                 >
-                                    {bank?.account_status === 'VALID' ? 'Completed' : 'Failed'}
+                                    {bank?.account_status === 'VALID' ? 'Verified' : bank?.account_status === 'INVALID'?  'Failed' : ""}
                                 </span>
                             }
                         />

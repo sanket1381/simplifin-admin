@@ -99,19 +99,21 @@ const BankVerifications = () => {
   const renderRow = (item) => (
     <>
       <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/bank-details/${item.bank_account_verified?.[0]?._id}`}>{item.bank_account_verified?.[0]?._id}</Link>
+        <Link to={`/bank-details/${item._id}`}>{item._id}</Link>
       </td>
-      <td className="px-6 py-3">{item.bank_account_verified?.[0]?.account_holder_name || 'N/A'}</td>
+      <td className="px-6 py-3">{item.name || 'N/A'}</td>
       <td className="px-6 py-3">{item.bank_account_verified?.[0]?.bank_name || 'N/A'}</td>
       <td className="px-6 py-3 capitalize">{item.bank_account_verified?.[0]?.type || 'N/A'}</td>
       <td className="px-6 py-3">
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium ${item.bank_account_verified?.[0]?.account_status === 'VALID'
             ? 'bg-green-100 text-green-600'
-            : 'bg-red-100 text-red-600'
+            : item.bank_account_verified?.[0]?.account_status === 'INVALID'
+            ? 'bg-red-100 text-red-600'
+            : ''
             }`}
         >
-          {item.bank_account_verified?.[0]?.account_status === 'VALID' ? 'Completed' : 'Failed'}
+          {item.bank_account_verified?.[0]?.account_status === 'VALID' ? 'Verified' : item.bank_account_verified?.[0]?.account_status === "INVALID" ?  'Failed': ""}
         </span>
       </td>
       <td className="px-6 py-3">
