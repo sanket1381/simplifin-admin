@@ -4,7 +4,7 @@ import { get } from '../services/commonService';
 import Table from '../components/table/Table';
 import LoadingSpinner from '../components/loader/LoadingSpinner';
 
-const PurchasePlanList = () => {
+const GoldFdList = () => {
   const [data, setData] = useState([]);
   const [sortOrder, setSortOrder] = useState('dec');
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,7 +12,7 @@ const PurchasePlanList = () => {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const PurchasePlanList = () => {
     try {
       setLoading(true);
       const response = await get(
-        `/sip/list?page=${currentPage}&pageSize=${pageSize}&sortField=created_at&sortOrder=${sortOrder}&data=${searchTerm}`
+        `/gold/fd/orders/list?page=${currentPage}&pageSize=${pageSize}&sortField=createdAt&sortOrder=${sortOrder}&data=${searchTerm}`
       );
       const result = response?.data?.result || [];
       const metaData = response?.data?.metaData;
@@ -37,7 +37,6 @@ const PurchasePlanList = () => {
       } else {
         setError('Failed to fetch data');
       }
-
     } finally {
       setLoading(false);
     }
@@ -45,7 +44,7 @@ const PurchasePlanList = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, sortOrder, pageSize]); 
+  }, [currentPage, sortOrder, pageSize]);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
@@ -84,72 +83,69 @@ const PurchasePlanList = () => {
 
   const handlePageSizeChange = (size) => {
     setPageSize(size);
-    setCurrentPage(1); 
+    setCurrentPage(1);
   };
 
-  const headers = ['ID', 'USER NAME', 'STATUS', 'AMOUNT', 'SCHEME', 'GROUP ORDER NO', 'CREATED AT'];
+  const headers = ['ID', 'USER NAME', 'GOLD LEASE', 'TENURE', 'INTEREST RATE', 'STATUS', 'CREATED AT'];
 
   const renderRow = (item) => (
     <>
       <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/purchase-plan-details/${item._id}`}>{item._id}</Link>
+        <Link to={`/gold-fd-details/${item._id}`}>{item._id}</Link>
       </td>
       <td className="px-6 py-3">{item?.username}</td>
+      <td className="px-6 py-3">{item?.goldLease} gms</td>
+      <td className="px-6 py-3">{item?.noOfDays}  days</td>
+      <td className="px-6 py-3">{item?.interestRate} %</td>
       <td className="px-6 py-3">
         <span
           className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item?.state
-              ? item?.state.toLowerCase().trim() === 'active'
+            ${item.status
+              ? item.status.toLowerCase().trim() === 'active'
                 ? 'bg-green-100 text-green-600'
-                : item?.state.toLowerCase().trim() === 'created'
-                  ? 'bg-blue-100 text-blue-600'
-                  : item?.state.toLowerCase().trim() === 'failed'
+                : item.status.toLowerCase().trim() === 'pending'
+                  ? 'bg-yellow-100 text-yellow-600'
+                  : item.status.toLowerCase().trim() === 'close'
                     ? 'bg-red-100 text-red-600'
-                    : item?.state.toLowerCase().trim() === 'cancelled'
-                      ? 'bg-gray-200 text-gray-700'
-                      : item?.state.toLowerCase().trim() === 'completed'
-                        ? 'bg-green-200 text-green-700'
-                        : ''
+                    : item.status.toLowerCase().trim() === 'completed'
+                      ? 'bg-green-200 text-green-700'
+                      : ''
               : ''
             }`}
         >
-          {item?.state
-            ? item?.state.toLowerCase().trim() === 'active'
+          {item.status
+            ? item.status.toLowerCase().trim() === 'active'
               ? 'Active'
-              : item?.state.toLowerCase().trim() === 'created'
-                ? 'Created'
-                : item?.state.toLowerCase().trim() === 'failed'
-                  ? 'Failed'
-                  : item?.state.toLowerCase().trim() === 'cancelled'
-                    ? 'Cancelled'
-                    : item?.state.toLowerCase().trim() === 'completed'
-                      ? 'Completed'
-                      : ''
+              : item.status.toLowerCase().trim() === 'pending'
+                ? 'Pending'
+                : item.status.toLowerCase().trim() === 'close'
+                  ? 'Closed'
+                  : item.status.toLowerCase().trim() === 'completed'
+                    ? 'Completed'
+                    : ''
             : ''}
         </span>
       </td>
-      <td className="px-6 py-3">{item?.amount}</td>
-      <td className="px-6 py-3">{item?.plan_name}</td>
-      <td className="px-6 py-3">{item?.mobile?.number || 'N/A'}</td>
       <td className="px-6 py-3">
-        {item?.created_at
-          ? new Date(item?.created_at).toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })
+        {item.createdAt
+          ? new Date(item.createdAt).toLocaleDateString('en-US', {
+              dateStyle: 'long',
+            })
           : 'N/A'}
       </td>
     </>
   );
 
   if (loading) return (
-      <div>
-        <LoadingSpinner />
-      </div>);
+    <div>
+      <LoadingSpinner />
+    </div>
+  );
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="w-full min-h-screen py-6 bg-white">
-      <h1 className="text-2xl font-bold mb-4 px-6">Purchase Plans</h1>
+      <h1 className="text-2xl font-bold mb-4 px-6">Gold FDs</h1>
       <div className="px-6">
         <Table
           headers={headers}
@@ -174,7 +170,4 @@ const PurchasePlanList = () => {
   );
 };
 
-export default PurchasePlanList;
-
-
-
+export default GoldFdList;

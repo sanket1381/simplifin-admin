@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const BankMandatesList = () => {
   const [data, setData] = useState([]);
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortOrder, setSortOrder] = useState('dec');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -108,7 +108,7 @@ const BankMandatesList = () => {
     setCurrentPage(1);
   };
 
-  const headers = ['INVESTORS', 'MANDATE ID', 'ID', 'REFERENCE', 'REG STATUS', 'AGGR STATUS', 'LAST UPDATED',];
+  const headers = ['INVESTORS', 'MANDATE ID', 'ID', 'REFERENCE', 'REG STATUS', 'AGGR STATUS', 'CREATED AT',];
 
   const renderRow = (item) => (
     <>
@@ -137,7 +137,14 @@ const BankMandatesList = () => {
       <td className="px-6 py-3">
         {aggrStatusMapping[item?.mmrnAggrStatus] || item?.mmrnAggrStatus || ''}
       </td>
-      <td className="px-6 py-3">{item?.update}</td>
+       <td className="px-6 py-3">
+        {item.created_at
+          ? new Date(item.created_at).toLocaleDateString('en-US', {
+            dateStyle: 'long',
+          })
+          : 'N/A'}
+      </td>
+      {/* <td className="px-6 py-3">{item?.update}</td> */}
     </>
   );
 

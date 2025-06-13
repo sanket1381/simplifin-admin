@@ -6,7 +6,7 @@ import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const KycRequests = () => {
   const [data, setData] = useState([]);
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortOrder, setSortOrder] = useState('dec');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

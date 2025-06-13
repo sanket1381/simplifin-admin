@@ -1,3 +1,7 @@
+import MFHoldings from "../pages/mfHoldings";
+import ViewGoldRedeemDetails from "../pages/viewGoldRedeemDetails";
+import ViewGoldSipDetails from "../pages/viewGoldSipDetails";
+import ViewGoldFdDetails from "../pages/viewGoldFdDetails";
 import { Navigate } from "react-router-dom";
 import PrivateRoute from "./privateRoute";
 import AdminLayout from "../layout/AdminLayout";
@@ -22,6 +26,11 @@ import AddressDetailsList from "../pages/addressDetailsList";
 import ViewAddressDetails from "../pages/viewAddressDetails";
 import UserDetailsList from "../pages/userDetailsList";
 import ViewUserDetails from "../pages/viewUserDetails";
+import GoldPurchaseList from "../pages/goldPurchaseList";
+import GoldRedeemList from "../pages/goldRedeemList";
+import GoldSipList from "../pages/goldSipList";
+import GoldFdList from "../pages/goldFdList";
+import ViewGoldPurchaseDetails from "../pages/viewGoldPurchaseDetails";
 
 const routes = [
   {
@@ -119,6 +128,42 @@ const routes = [
       {
         path: "redemptionplan-details/:id", 
         element: <RedemptionPlanDetails />,
+      },
+      {
+        path: "gold-purchase",
+        element: <GoldPurchaseList />,
+      },
+      {
+        path: "gold-purchase-details/:id",
+        element: <ViewGoldPurchaseDetails />,
+      },
+      {
+        path: "gold-redeem-details/:id",
+        element: <ViewGoldRedeemDetails />,
+      },
+      {
+        path: "gold-sip-details/:id",
+        element: <ViewGoldSipDetails />,
+      },
+      {
+        path: "gold-fd-details/:id",
+        element: <ViewGoldFdDetails />,
+      },
+      {
+        path: "gold-redeem",
+        element: <GoldRedeemList />,
+      },
+      {
+        path: "gold-sip",
+        element: <GoldSipList />,
+      },
+      {
+        path: "gold-fd",
+        element: <GoldFdList />,
+      },
+      {
+        path: "mf-holdings",
+        element: <MFHoldings />,
       },
     ],
   },

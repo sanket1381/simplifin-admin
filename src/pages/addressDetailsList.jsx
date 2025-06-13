@@ -7,7 +7,7 @@ import LoadingSpinner from '../components/loader/LoadingSpinner';
 
 const AddressDetailsList = () => {
   const [data, setData] = useState([]);
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortOrder, setSortOrder] = useState('dec');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
