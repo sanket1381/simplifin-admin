@@ -1,41 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { get } from '../services/commonService';
+import React, { useEffect, useState } from 'react';
 import Table from '../components/table/Table';
 import LoadingSpinner from '../components/loader/LoadingSpinner';
+import { get } from '../services/commonService';
 
-const UserDetailsList = () => {
+const MFHoldings = () => {
   const [data, setData] = useState([]);
-  const [sortOrder, setSortOrder] = useState('dec');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [hasNextPage, setHasNextPage] = useState(false);
   const [pageSize, setPageSize] = useState(10);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc');
+
+  const headers = ['USER NAME', 'FOLIO NUMBER', 'INVESTED VALUE', 'CURRENT VALUE', 'PROFIT & LOSS', 'CREATED AT'];
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await get(
-        `/users/list?page=${currentPage}&pageSize=${pageSize}&sortField=createdAt&sortOrder=${sortOrder}&data=${searchTerm}`
-      );
+      setError('');
+      // Replace with your actual API endpoint for holdings
+      const response = await get(`/mutualFund/portfolio/list?page=${currentPage}&pageSize=${pageSize}&sortOrder=${sortOrder}&data=${searchTerm}`);
       const result = response?.data?.result || [];
       const metaData = response?.data?.metaData;
-
       setData(result);
       setHasNextPage(result.length === pageSize);
       setTotalPages(metaData?.totalPages || 1);
     } catch (err) {
-      console.error(err);
-
-      if (err?.response?.data?.message === 'Unauthorized access') {
-        navigate('/signin');
-      } else {
-        setError('Failed to fetch data');
-      }
+      setError('Failed to fetch holdings');
     } finally {
       setLoading(false);
     }
@@ -51,13 +44,11 @@ const UserDetailsList = () => {
       fetchData();
       return;
     }
-
     if (searchTerm.length >= 3) {
       const delayDebounce = setTimeout(() => {
         setCurrentPage(1);
         fetchData();
       }, 500);
-
       return () => clearTimeout(delayDebounce);
     }
   }, [searchTerm]);
@@ -85,47 +76,23 @@ const UserDetailsList = () => {
     setCurrentPage(1);
   };
 
-  const headers = ['ID', 'NAME', 'EMAIL', 'MOBILE NUMBER', 'STATUS', 'REFER CODE', 'CREATED AT'];
-
   const renderRow = (item) => (
     <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/user-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item.name}</td>
-      <td className="px-6 py-3">{item.email}</td>
-      <td className="px-6 py-3">{item.mobileNumber}</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium ${
-            item.status === 'active'
-              ? 'bg-green-100 text-green-600'
-              : 'bg-red-100 text-red-600'
-          }`}
-        >
-          {item.status === 'active' ? 'Active' : 'Inactive'}
-        </span>
-      </td>
-      <td className="px-6 py-3">{item.referCode || 'N/A'}</td>
-      <td className="px-6 py-3">
-        {item.createdAt
-          ? new Date(item.createdAt).toLocaleDateString('en-US', {
-              dateStyle: 'long',
-            })
-          : 'N/A'}
-      </td>
+      <td className="px-6 py-3">{item?.username}</td>
+      <td className="px-6 py-3">{item?.folioNumber}</td>
+      <td className="px-6 py-3">{!isNaN(Number(item?.investedValue)) ? Number(item.investedValue).toFixed(2) : item?.investedValue}</td>
+      <td className="px-6 py-3">{!isNaN(Number(item?.currentValue)) ? Number(item.currentValue).toFixed(2) : item?.currentValue}</td>
+      <td className="px-6 py-3">{!isNaN(Number(item?.profitLoss)) ? Number(item.profitLoss).toFixed(2) : item?.profitLoss}</td>
+      <td className="px-6 py-3">{item?.tillDate ? new Date(item?.tillDate).toLocaleDateString('en-US', {dateStyle: 'long'}) : 'N/A'}</td>
     </>
   );
 
-  if (loading)return (
-      <div>
-        <LoadingSpinner />
-      </div>);
+  if (loading) return <div><LoadingSpinner /></div>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="w-full min-h-screen py-6 bg-white">
-      <h1 className="text-2xl font-bold mb-4 px-6">User Details</h1>
+      <h1 className="text-2xl font-bold mb-4 px-6">MF Holdings</h1>
       <div className="px-6">
         <Table
           headers={headers}
@@ -150,4 +117,4 @@ const UserDetailsList = () => {
   );
 };
 
-export default UserDetailsList;
+export default MFHoldings;

@@ -68,7 +68,8 @@ const ViewUserDetails = () => {
                   : 'Inactive'
               }
             />
-            <TableRow label="Refer Code" value={userData.referCode || 'N/A'} />
+            <TableRow label="Refer Code" value={userData?.referCode || 'N/A'} />
+            <TableRow label="Referrer Code" value={userData?.referrerCode || 'N/A'} />
             <TableRow
               label="Created At"
               value={

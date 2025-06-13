@@ -125,6 +125,27 @@ const PurchasePlanDetails = () => {
                         <TableRow label="CAN" value={purchasePlanData?.can || 'N/A'} />
                         <TableRow label="AMOUNT" value={purchasePlanData?.amount || 'N/A'} />
                         <TableRow label="SCHEME" value={purchasePlanData?.plan_name || 'N/A'} />
+                        <TableRow label="FREQUENCY" value={purchasePlanData?.frequency || 'N/A'} />
+                        <TableRow
+                            label="START DATE"
+                            value={
+                              purchasePlanData?.start_date
+                                    ? new Date(purchasePlanData?.start_date).toLocaleDateString('en-US', {
+                                        dateStyle: 'long',
+                                    })
+                                    : 'N/A'
+                            }
+                        />
+                        <TableRow
+                            label="END DATE"
+                            value={
+                              purchasePlanData?.end_date
+                                    ? new Date(purchasePlanData?.end_date).toLocaleDateString('en-US', {
+                                        dateStyle: 'long',
+                                    })
+                                    : 'N/A'
+                            }
+                        />
                         <TableRow label="GROUP ORDER NO" value={purchasePlanData?.groupOrderNo || 'N/A'} />
                         <TableRow
                             label="CREATED AT"
