@@ -62,35 +62,41 @@ const PurchasePlanDetails = () => {
                             label="STATUS"
                             value={
                                 purchasePlanData?.state
-                                    ? (
-                                        <span
-                                            className={`px-2 py-1 text-xs rounded-full font-medium 
-                                              ${purchasePlanData.state.toLowerCase().trim() === 'active'
-                                                ? 'bg-green-100 text-green-600'
-                                                : purchasePlanData.state.toLowerCase().trim() === 'created'
-                                                    ? 'bg-blue-100 text-blue-600'
-                                                    : purchasePlanData.state.toLowerCase().trim() === 'failed'
-                                                        ? 'bg-red-100 text-red-600'
-                                                        : purchasePlanData.state.toLowerCase().trim() === 'cancelled'
-                                                            ? 'bg-gray-200 text-gray-700'
-                                                            : purchasePlanData.state.toLowerCase().trim() === 'completed'
-                                                                ? 'bg-green-200 text-green-700'
-                                                                : ''
-                                            }`}
-                                        >
-                                            {purchasePlanData.state.toLowerCase().trim() === 'active'
-                                                ? 'Active'
-                                                : purchasePlanData.state.toLowerCase().trim() === 'created'
-                                                    ? 'Created'
-                                                    : purchasePlanData.state.toLowerCase().trim() === 'failed'
-                                                        ? 'Failed'
-                                                        : purchasePlanData.state.toLowerCase().trim() === 'cancelled'
-                                                            ? 'Cancelled'
-                                                            : purchasePlanData.state.toLowerCase().trim() === 'completed'
-                                                                ? 'Completed'
-                                                                : ''} 
-                                        </span>
-                                    )
+                                    ? (() => {
+                                        const status = purchasePlanData.state.toLowerCase().trim();
+                                        let colorClass = '';
+                                        let label = '';
+                                        switch (status) {
+                                            case 'active':
+                                                colorClass = 'bg-green-100 text-green-600';
+                                                label = 'Active';
+                                                break;
+                                            case 'created':
+                                                colorClass = 'bg-blue-100 text-blue-600';
+                                                label = 'Created';
+                                                break;
+                                            case 'failed':
+                                                colorClass = 'bg-red-100 text-red-600';
+                                                label = 'Failed';
+                                                break;
+                                            case 'cancelled':
+                                                colorClass = 'bg-gray-200 text-gray-700';
+                                                label = 'Cancelled';
+                                                break;
+                                            case 'completed':
+                                                colorClass = 'bg-green-200 text-green-700';
+                                                label = 'Completed';
+                                                break;
+                                            default:
+                                                colorClass = '';
+                                                label = status;
+                                        }
+                                        return (
+                                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${colorClass}`}>
+                                                {label}
+                                            </span>
+                                        );
+                                    })()
                                     : ''
                             }
                         />
@@ -98,27 +104,53 @@ const PurchasePlanDetails = () => {
                             label="PAYMENT STATUS"
                             value={
                                 purchasePlanData?.paymentStatus
-                                    ? (
-                                        <span
-                                            className={`px-2 py-1 text-xs rounded-full font-medium 
-                                              ${purchasePlanData?.paymentStatus.toLowerCase().trim() === 'success'
-                                                ? 'bg-green-100 text-green-600'
-                                                : purchasePlanData?.paymentStatus.toLowerCase().trim() === 'processing'
-                                                    ? 'bg-yellow-100 text-yellow-600'
-                                                    : purchasePlanData?.paymentStatus.toLowerCase().trim() === 'failed'
-                                                        ? 'bg-red-100 text-red-600'
-                                                        : ''
-                                            }`}
-                                        >
-                                            {purchasePlanData?.paymentStatus.toLowerCase().trim() === 'success'
-                                                ? 'Successful'
-                                                : purchasePlanData?.paymentStatus.toLowerCase().trim() === 'processing'
-                                                    ? 'Processing'
-                                                    : purchasePlanData?.paymentStatus.toLowerCase().trim() === 'failed'
-                                                        ? 'Failed'
-                                                        : ''}
-                                        </span>
-                                    )
+                                    ? (() => {
+                                        const status = purchasePlanData.paymentStatus.toLowerCase().trim();
+                                        let colorClass = '';
+                                        let label = '';
+                                        switch (status) {
+                                            case 'requested':
+                                                colorClass = 'bg-gray-100 text-gray-600';
+                                                label = 'Requested';
+                                                break;
+                                            case 'initiated':
+                                                colorClass = 'bg-blue-100 text-blue-600';
+                                                label = 'Initiated';
+                                                break;
+                                            case 'failed':
+                                                colorClass = 'bg-red-100 text-red-600';
+                                                label = 'Failed';
+                                                break;
+                                            case 'confirmed':
+                                                colorClass = 'bg-yellow-100 text-yellow-600';
+                                                label = 'Confirmed';
+                                                break;
+                                            case 'rejected':
+                                                colorClass = 'bg-red-100 text-red-600';
+                                                label = 'Rejected';
+                                                break;
+                                            case 'success':
+                                                colorClass = 'bg-green-100 text-green-600';
+                                                label = 'Successful';
+                                                break;
+                                            case 'received':
+                                                colorClass = 'bg-purple-100 text-purple-600';
+                                                label = 'Received';
+                                                break;
+                                            case 'processing':
+                                                colorClass = 'bg-yellow-100 text-yellow-600';
+                                                label = 'Processing';
+                                                break;
+                                            default:
+                                                colorClass = '';
+                                                label = status;
+                                        }
+                                        return (
+                                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${colorClass}`}>
+                                                {label}
+                                            </span>
+                                        );
+                                    })()
                                     : ''
                             }
                         />

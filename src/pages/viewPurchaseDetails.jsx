@@ -94,27 +94,49 @@ const PurchaseDetails = () => {
                             label="PAYMENT STATUS"
                             value={
                                 purchaseData?.paymentStatus
-                                    ? (
-                                        <span
-                                            className={`px-2 py-1 text-xs rounded-full font-medium 
-                                              ${purchaseData.paymentStatus.toLowerCase().trim() === 'success'
-                                                    ? 'bg-green-100 text-green-600'
-                                                    : purchaseData.paymentStatus.toLowerCase().trim() === 'initiated'
-                                                        ? 'bg-blue-100 text-blue-600'
-                                                        : purchaseData.paymentStatus.toLowerCase().trim() === 'failed'
-                                                            ? 'bg-red-100 text-red-600'
-                                                            : ''
-                                            }`}
-                                        >
-                                            {purchaseData.paymentStatus.toLowerCase().trim() === 'success'
-                                                ? 'Successful'
-                                                : purchaseData.paymentStatus.toLowerCase().trim() === 'initiated'
-                                                    ? 'Initiated'
-                                                    : purchaseData.paymentStatus.toLowerCase().trim() === 'failed'
-                                                        ? 'Failed'
-                                                        : ''}
-                                        </span>
-                                    )
+                                    ? (() => {
+                                        const status = purchaseData.paymentStatus.toLowerCase().trim();
+                                        let colorClass = '';
+                                        let label = '';
+                                        switch (status) {
+                                            case 'requested':
+                                                colorClass = 'bg-gray-100 text-gray-600';
+                                                label = 'Requested';
+                                                break;
+                                            case 'initiated':
+                                                colorClass = 'bg-blue-100 text-blue-600';
+                                                label = 'Initiated';
+                                                break;
+                                            case 'failed':
+                                                colorClass = 'bg-red-100 text-red-600';
+                                                label = 'Failed';
+                                                break;
+                                            case 'confirmed':
+                                                colorClass = 'bg-yellow-100 text-yellow-600';
+                                                label = 'Confirmed';
+                                                break;
+                                            case 'rejected':
+                                                colorClass = 'bg-red-100 text-red-600';
+                                                label = 'Rejected';
+                                                break;
+                                            case 'success':
+                                                colorClass = 'bg-green-100 text-green-600';
+                                                label = 'Successful';
+                                                break;
+                                            case 'received':
+                                                colorClass = 'bg-purple-100 text-purple-600';
+                                                label = 'Received';
+                                                break;
+                                            default:
+                                                colorClass = '';
+                                                label = status;
+                                        }
+                                        return (
+                                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${colorClass}`}>
+                                                {label}
+                                            </span>
+                                        );
+                                    })()
                                     : ''
                             }
                         />

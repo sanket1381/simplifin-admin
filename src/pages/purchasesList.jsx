@@ -125,29 +125,49 @@ const PurchasesList = () => {
       </span>
     </span>,
     <span key="paymentStatus">
-      <span
-        className={`px-2 py-1 text-xs rounded-full font-medium 
-          ${item.paymentStatus
-            ? item.paymentStatus.toLowerCase().trim() === 'success'
-              ? 'bg-green-100 text-green-600'
-              : item.paymentStatus.toLowerCase().trim() === 'initiated'
-                ? 'bg-blue-100 text-blue-600'
-                : item.paymentStatus.toLowerCase().trim() === 'failed'
-                  ? 'bg-red-100 text-red-600'
-                  : ''
-            : ''
-          }`}
-      >
-        {item.paymentStatus
-          ? item.paymentStatus.toLowerCase().trim() === 'success'
-            ? 'Successful'
-            : item.paymentStatus.toLowerCase().trim() === 'initiated'
-              ? 'Initiated'
-              : item.paymentStatus.toLowerCase().trim() === 'failed'
-                ? 'Failed'
-                : ''
-          : ''}
-      </span>
+      {(() => {
+        const status = item.paymentStatus ? item.paymentStatus.toLowerCase().trim() : '';
+        let colorClass = '';
+        let label = '';
+        switch (status) {
+          case 'requested':
+            colorClass = 'bg-gray-100 text-gray-600';
+            label = 'Requested';
+            break;
+          case 'initiated':
+            colorClass = 'bg-blue-100 text-blue-600';
+            label = 'Initiated';
+            break;
+          case 'failed':
+            colorClass = 'bg-red-100 text-red-600';
+            label = 'Failed';
+            break;
+          case 'confirmed':
+            colorClass = 'bg-yellow-100 text-yellow-600';
+            label = 'Confirmed';
+            break;
+          case 'rejected':
+            colorClass = 'bg-red-100 text-red-600';
+            label = 'Rejected';
+            break;
+          case 'success':
+            colorClass = 'bg-green-100 text-green-600';
+            label = 'Successful';
+            break;
+          case 'received':
+            colorClass = 'bg-purple-100 text-purple-600';
+            label = 'Received';
+            break;
+          default:
+            colorClass = '';
+            label = status;
+        }
+        return (
+          <span className={`px-2 py-1 text-xs rounded-full font-medium ${colorClass}`}>
+            {label}
+          </span>
+        );
+      })()}
     </span>,
     <span key="amount">{item?.amount}</span>,
     <span key="plan_name">{item?.plan_name}</span>,

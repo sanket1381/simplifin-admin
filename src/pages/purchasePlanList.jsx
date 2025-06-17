@@ -95,37 +95,41 @@ const PurchasePlanList = () => {
     </span>,
     <span key="username">{item?.username}</span>,
     <span key="status">
-      <span
-        className={`px-2 py-1 text-xs rounded-full font-medium 
-          ${item?.state
-            ? item?.state.toLowerCase().trim() === 'active'
-              ? 'bg-green-100 text-green-600'
-              : item?.state.toLowerCase().trim() === 'created'
-                ? 'bg-blue-100 text-blue-600'
-                : item?.state.toLowerCase().trim() === 'failed'
-                  ? 'bg-red-100 text-red-600'
-                  : item?.state.toLowerCase().trim() === 'cancelled'
-                    ? 'bg-gray-200 text-gray-700'
-                    : item?.state.toLowerCase().trim() === 'completed'
-                      ? 'bg-green-200 text-green-700'
-                      : ''
-            : ''
-          }`}
-      >
-        {item?.state
-          ? item?.state.toLowerCase().trim() === 'active'
-            ? 'Active'
-            : item?.state.toLowerCase().trim() === 'created'
-              ? 'Created'
-              : item?.state.toLowerCase().trim() === 'failed'
-                ? 'Failed'
-                : item?.state.toLowerCase().trim() === 'cancelled'
-                  ? 'Cancelled'
-                  : item?.state.toLowerCase().trim() === 'completed'
-                    ? 'Completed'
-                    : ''
-          : ''}
-      </span>
+      {(() => {
+        const status = item?.state ? item.state.toLowerCase().trim() : '';
+        let colorClass = '';
+        let label = '';
+        switch (status) {
+          case 'active':
+            colorClass = 'bg-green-100 text-green-600';
+            label = 'Active';
+            break;
+          case 'created':
+            colorClass = 'bg-blue-100 text-blue-600';
+            label = 'Created';
+            break;
+          case 'failed':
+            colorClass = 'bg-red-100 text-red-600';
+            label = 'Failed';
+            break;
+          case 'cancelled':
+            colorClass = 'bg-gray-200 text-gray-700';
+            label = 'Cancelled';
+            break;
+          case 'completed':
+            colorClass = 'bg-green-200 text-green-700';
+            label = 'Completed';
+            break;
+          default:
+            colorClass = '';
+            label = status;
+        }
+        return (
+          <span className={`px-2 py-1 text-xs rounded-full font-medium ${colorClass}`}>
+            {label}
+          </span>
+        );
+      })()}
     </span>,
     <span key="amount">{item?.amount}</span>,
     <span key="plan_name">{item?.plan_name}</span>,
