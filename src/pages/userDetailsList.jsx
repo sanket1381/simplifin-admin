@@ -174,7 +174,7 @@ const UserDetailsList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
-          columnWidths={["16%","15%","25%","10%","8%","8%","8%","13%","3%"]}
+          columnWidths={["16%","15%","22%","10%","10%","8%","8%","13%","3%"]}
         />
       </div>
       <StatusEditModal
