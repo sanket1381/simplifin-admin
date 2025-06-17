@@ -96,37 +96,31 @@ const BankVerifications = () => {
     return item.name?.toLowerCase().includes(search);
   };
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/bank-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item.name || 'N/A'}</td>
-      <td className="px-6 py-3">{item.bank_account_verified?.[0]?.bank_name || 'N/A'}</td>
-      <td className="px-6 py-3 capitalize">{item.bank_account_verified?.[0]?.type || 'N/A'}</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium ${item.bank_account_verified?.[0]?.account_status === 'VALID'
-            ? 'bg-green-100 text-green-600'
-            : item.bank_account_verified?.[0]?.account_status === 'INVALID'
-            ? 'bg-red-100 text-red-600'
-            : ''
-            }`}
-        >
-          {item.bank_account_verified?.[0]?.account_status === 'VALID' ? 'Verified' : item.bank_account_verified?.[0]?.account_status === "INVALID" ?  'Failed': ""}
-        </span>
-      </td>
-      <td className="px-6 py-3">
-        {item.bank_account_verified?.[0]?.created_at
-          ? new Date(item.bank_account_verified[0].created_at).toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })
-          : 'N/A'}
-      </td>
-
-
-    </>
-  );
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/bank-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="name">{item.name || 'N/A'}</span>,
+    <span key="bankName">{item.bank_account_verified?.[0]?.bank_name || 'N/A'}</span>,
+    <span key="type" className="capitalize">{item.bank_account_verified?.[0]?.type || 'N/A'}</span>,
+    <span key="status">
+      <span
+        className={`px-2 py-1 text-xs rounded-full font-medium ${item.bank_account_verified?.[0]?.account_status === 'VALID'
+          ? 'bg-green-100 text-green-600'
+          : item.bank_account_verified?.[0]?.account_status === 'INVALID'
+          ? 'bg-red-100 text-red-600'
+          : ''
+          }`}
+      >
+        {item.bank_account_verified?.[0]?.account_status === 'VALID' ? 'Verified' : item.bank_account_verified?.[0]?.account_status === "INVALID" ? 'Failed' : ""}
+      </span>
+    </span>,
+    <span key="createdAt">{item.bank_account_verified?.[0]?.created_at
+      ? new Date(item.bank_account_verified[0].created_at).toLocaleDateString('en-US', {
+        dateStyle: 'long',
+      })
+      : 'N/A'}</span>
+  ];
 
   if (loading)  return (
       <div>
@@ -156,6 +150,7 @@ const BankVerifications = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["22%","22%","25%","10%","10%","10%"]}
         />
       </div>
     </div>

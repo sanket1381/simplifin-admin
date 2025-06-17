@@ -88,67 +88,61 @@ const GoldSipList = () => {
 
   const headers = ['ID', 'USER NAME', 'AMOUNT', 'FREQUENCY', 'NEXT INSTALLMENT', 'STATUS', 'CREATED AT'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/gold-sip-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item?.username}</td>
-      <td className="px-6 py-3">{item?.amount}</td>
-      <td className="px-6 py-3">{item?.frequency}</td>
-      <td className="px-6 py-3">
-        {item?.next_installment_date
-          ? new Date(item.next_installment_date).toLocaleDateString('en-US', {
-              dateStyle: 'long',
-            })
-          : 'N/A'}
-      </td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.status
-              ? item.status.toLowerCase().trim() === 'active'
-                ? 'bg-green-100 text-green-600'
-                : item.status.toLowerCase().trim() === 'authenticated'
-                  ? 'bg-yellow-100 text-yellow-600'
-                : item.status.toLowerCase().trim() === 'pending'
-                  ? 'bg-yellow-100 text-yellow-600'
-                  : item.status.toLowerCase().trim() === 'failed'
-                    ? 'bg-red-100 text-red-600'
-                  : item.status.toLowerCase().trim() === 'cancelled'
-                    ? 'bg-red-100 text-red-600'
-                    : item.status.toLowerCase().trim() === 'completed'
-                      ? 'bg-green-200 text-green-700'
-                      : ''
-              : ''
-            }`}
-        >
-          {item.status
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/gold-sip-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="username">{item?.username}</span>,
+    <span key="amount">{item?.amount}</span>,
+    <span key="frequency">{item?.frequency}</span>,
+    <span key="next_installment_date">{item?.next_installment_date
+      ? new Date(item.next_installment_date).toLocaleDateString('en-US', {
+          dateStyle: 'long',
+        })
+      : 'N/A'}</span>,
+    <span key="status">
+      <span
+        className={`px-2 py-1 text-xs rounded-full font-medium 
+          ${item.status
             ? item.status.toLowerCase().trim() === 'active'
-              ? 'Active'
+              ? 'bg-green-100 text-green-600'
               : item.status.toLowerCase().trim() === 'authenticated'
-                ? 'Authenticated'
+                ? 'bg-yellow-100 text-yellow-600'
               : item.status.toLowerCase().trim() === 'pending'
-                ? 'Pending'
+                ? 'bg-yellow-100 text-yellow-600'
                 : item.status.toLowerCase().trim() === 'failed'
-                  ? 'Failed'
+                  ? 'bg-red-100 text-red-600'
                 : item.status.toLowerCase().trim() === 'cancelled'
-                  ? 'Cancelled'
+                  ? 'bg-red-100 text-red-600'
                   : item.status.toLowerCase().trim() === 'completed'
-                    ? 'Completed'
+                    ? 'bg-green-200 text-green-700'
                     : ''
-            : ''}
-        </span>
-      </td>
-      <td className="px-6 py-3">
-        {item.createdAt
-          ? new Date(item.createdAt).toLocaleDateString('en-US', {
-              dateStyle: 'long',
-            })
-          : 'N/A'}
-      </td>
-    </>
-  );
+            : ''
+          }`}
+      >
+        {item.status
+          ? item.status.toLowerCase().trim() === 'active'
+            ? 'Active'
+            : item.status.toLowerCase().trim() === 'authenticated'
+              ? 'Authenticated'
+            : item.status.toLowerCase().trim() === 'pending'
+              ? 'Pending'
+              : item.status.toLowerCase().trim() === 'failed'
+                ? 'Failed'
+              : item.status.toLowerCase().trim() === 'cancelled'
+                ? 'Cancelled'
+                : item.status.toLowerCase().trim() === 'completed'
+                  ? 'Completed'
+                  : ''
+          : ''}
+      </span>
+    </span>,
+    <span key="createdAt">{item.createdAt
+      ? new Date(item.createdAt).toLocaleDateString('en-US', {
+          dateStyle: 'long',
+        })
+      : 'N/A'}</span>
+  ];
 
   if (loading) return (
     <div>
@@ -178,6 +172,7 @@ const GoldSipList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["22%","22%","10%","10%","11%","13%","10%"]}
         />
       </div>
     </div>

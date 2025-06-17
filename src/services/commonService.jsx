@@ -26,3 +26,7 @@ export const get = (url, config = {}) => api.get(url, config);
 
 export const post = (url, data, headers = {}) =>
   api.post(url, data, { headers });
+
+// Add a put method for updating
+export const put = (url, data, headers = {}) =>
+  api.put(url, data, { headers });

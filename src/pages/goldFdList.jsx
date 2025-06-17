@@ -88,53 +88,49 @@ const GoldFdList = () => {
 
   const headers = ['ID', 'USER NAME', 'GOLD LEASE', 'TENURE', 'INTEREST RATE', 'STATUS', 'CREATED AT'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/gold-fd-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item?.username}</td>
-      <td className="px-6 py-3">{item?.goldLease} gms</td>
-      <td className="px-6 py-3">{item?.noOfDays}  days</td>
-      <td className="px-6 py-3">{item?.interestRate} %</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.status
-              ? item.status.toLowerCase().trim() === 'active'
-                ? 'bg-green-100 text-green-600'
-                : item.status.toLowerCase().trim() === 'pending'
-                  ? 'bg-yellow-100 text-yellow-600'
-                  : item.status.toLowerCase().trim() === 'close'
-                    ? 'bg-red-100 text-red-600'
-                    : item.status.toLowerCase().trim() === 'completed'
-                      ? 'bg-green-200 text-green-700'
-                      : ''
-              : ''
-            }`}
-        >
-          {item.status
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/gold-fd-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="username">{item?.username}</span>,
+    <span key="goldLease">{item?.goldLease} gms</span>,
+    <span key="noOfDays">{item?.noOfDays} days</span>,
+    <span key="interestRate">{item?.interestRate} %</span>,
+    <span key="status">
+      <span
+        className={`px-2 py-1 text-xs rounded-full font-medium 
+          ${item.status
             ? item.status.toLowerCase().trim() === 'active'
-              ? 'Active'
+              ? 'bg-green-100 text-green-600'
               : item.status.toLowerCase().trim() === 'pending'
-                ? 'Pending'
+                ? 'bg-yellow-100 text-yellow-600'
                 : item.status.toLowerCase().trim() === 'close'
-                  ? 'Closed'
+                  ? 'bg-red-100 text-red-600'
                   : item.status.toLowerCase().trim() === 'completed'
-                    ? 'Completed'
+                    ? 'bg-green-200 text-green-700'
                     : ''
-            : ''}
-        </span>
-      </td>
-      <td className="px-6 py-3">
-        {item.createdAt
-          ? new Date(item.createdAt).toLocaleDateString('en-US', {
-              dateStyle: 'long',
-            })
-          : 'N/A'}
-      </td>
-    </>
-  );
+            : ''
+          }`}
+      >
+        {item.status
+          ? item.status.toLowerCase().trim() === 'active'
+            ? 'Active'
+            : item.status.toLowerCase().trim() === 'pending'
+              ? 'Pending'
+              : item.status.toLowerCase().trim() === 'close'
+                ? 'Closed'
+                : item.status.toLowerCase().trim() === 'completed'
+                  ? 'Completed'
+                  : ''
+          : ''}
+      </span>
+    </span>,
+    <span key="createdAt">{item.createdAt
+      ? new Date(item.createdAt).toLocaleDateString('en-US', {
+          dateStyle: 'long',
+        })
+      : 'N/A'}</span>
+  ];
 
   if (loading) return (
     <div>
@@ -164,6 +160,7 @@ const GoldFdList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["22%","22%","12%","12%","10%","10%","17%"]}
         />
       </div>
     </div>

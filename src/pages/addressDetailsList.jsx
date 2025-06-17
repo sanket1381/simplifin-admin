@@ -88,28 +88,21 @@ const AddressDetailsList = () => {
 
   const headers = ['KYC ID', 'NAME', 'LINE 1', 'CITY', 'COUNTRY', 'STATUS', 'PINCODE'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/address-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item?.name}</td>
-      <td className="px-6 py-3">{item?.address?.line_1 || 'N/A'}</td>
-      <td className="px-6 py-3">{item?.address?.city || 'N/A'}</td>
-      <td className="px-6 py-3">{item?.address?.country || 'N/A'}</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium ${item?.address?.status === 'SUCCESS'
-            ? 'bg-green-100 text-green-600'
-            : ''
-            }`}
-        >
-          {item?.address?.status === 'SUCCESS' ? 'Successful' : ''}
-        </span>
-      </td>
-      <td className="px-6 py-3">{item?.address?.pincode || 'N/A'}</td>
-    </>
-  );
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/address-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="name">{item?.name}</span>,
+    <span key="line1">{item?.address?.line_1 || 'N/A'}</span>,
+    <span key="city">{item?.address?.city || 'N/A'}</span>,
+    <span key="country">{item?.address?.country || 'N/A'}</span>,
+    <span key="status">
+      <span className={`px-2 py-1 text-xs rounded-full font-medium ${item?.address?.status === 'SUCCESS' ? 'bg-green-100 text-green-600' : ''}`}>
+        {item?.address?.status === 'SUCCESS' ? 'Successful' : ''}
+      </span>
+    </span>,
+    <span key="pincode">{item?.address?.pincode || 'N/A'}</span>
+  ];
 
   if (loading)
     return (
@@ -140,6 +133,7 @@ const AddressDetailsList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["15%","15%","25%","15%","10%","10%","10%"]}
         />
       </div>
     </div>

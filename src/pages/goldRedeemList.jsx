@@ -88,24 +88,20 @@ const GoldRedeemList = () => {
 
   const headers = ['ID', 'USER NAME', 'QUANTITY', 'AMOUNT', 'ORDER ID', 'CREATED AT'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/gold-redeem-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item?.username}</td>
-      <td className="px-6 py-3">{item?.quantity}</td>
-      <td className="px-6 py-3">{item?.totalAmount}</td>
-      <td className="px-6 py-3">{item?.transactionId}</td>
-      <td className="px-6 py-3">
-        {item.createdAt
-          ? new Date(item.createdAt).toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })
-          : 'N/A'}
-      </td>
-    </>
-  );
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/gold-redeem-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="username">{item?.username}</span>,
+    <span key="quantity">{item?.quantity}</span>,
+    <span key="totalAmount">{item?.totalAmount}</span>,
+    <span key="transactionId">{item?.transactionId}</span>,
+    <span key="createdAt">{item.createdAt
+      ? new Date(item.createdAt).toLocaleDateString('en-US', {
+        dateStyle: 'long',
+      })
+      : 'N/A'}</span>
+  ];
 
   if (loading) return (
     <div>
@@ -134,6 +130,7 @@ const GoldRedeemList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["22%","22%","10%","11%","25%","10%"]}
         />
       </div>
     </div>

@@ -31,6 +31,7 @@ import GoldRedeemList from "../pages/goldRedeemList";
 import GoldSipList from "../pages/goldSipList";
 import GoldFdList from "../pages/goldFdList";
 import ViewGoldPurchaseDetails from "../pages/viewGoldPurchaseDetails";
+import GoldHoldings from "../pages/goldHoldings";
 
 const routes = [
   {
@@ -128,6 +129,10 @@ const routes = [
       {
         path: "redemptionplan-details/:id", 
         element: <RedemptionPlanDetails />,
+      },
+      {
+        path: "gold-holdings",
+        element: <GoldHoldings />,
       },
       {
         path: "gold-purchase",

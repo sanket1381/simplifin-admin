@@ -126,6 +126,7 @@ const PurchasePlanDetails = () => {
                         <TableRow label="AMOUNT" value={purchasePlanData?.amount || 'N/A'} />
                         <TableRow label="SCHEME" value={purchasePlanData?.plan_name || 'N/A'} />
                         <TableRow label="FREQUENCY" value={purchasePlanData?.frequency || 'N/A'} />
+                        <TableRow label="INSTALLMENT DAY" value={purchasePlanData?.installment_day || 'N/A'} />
                         <TableRow
                             label="START DATE"
                             value={

@@ -17,6 +17,7 @@ const Table = ({
   onPageSizeChange,
   totalPages,
   searchPlaceholder = "Search...",
+  columnWidths = [], // new prop: array of widths (e.g. ['80px', '120px', ...] or ['10%', '20%', ...])
 }) => {
   return (
     <div className="flex flex-col min-h-screen px-6 py-4">
@@ -72,12 +73,19 @@ const Table = ({
       </div>
 
       {/* Table */}
-      <div className="w-full overflow-x-auto rounded-lg shadow bg-white flex-1">
-        <table className="w-full text-sm table-auto">
+      <div className="w-full rounded-lg shadow bg-white flex-1">
+        <table className="min-w-full text-sm table-fixed">
           <thead className="bg-blue-50 text-gray-700 sticky top-0 z-10">
             <tr>
               {headers.map((header, idx) => (
-                <th key={idx} className="px-6 py-3 text-left font-semibold">
+                <th
+                  key={idx}
+                  className="px-4 py-3 text-left font-semibold truncate"
+                  style={{
+                    width: columnWidths[idx] || `${100 / headers.length}%`,
+                    maxWidth: columnWidths[idx] || `${100 / headers.length}%`,
+                  }}
+                >
                   {header.toLowerCase() === 'created at' ? (
                     <button onClick={handleSortClick} className="text-blue-600">
                       {header} {sortOrder === 'asc' ? '▲' : '▼'}
@@ -93,7 +101,34 @@ const Table = ({
             {data.length > 0 ? (
               data.map((item, idx) => (
                 <tr key={idx} className="border-t hover:bg-gray-100 transition-colors even:bg-gray-50">
-                  {renderRow(item)}
+                  {Array.isArray(renderRow(item))
+                    ? renderRow(item).map((cell, cellIdx) => (
+                        <td
+                          key={cellIdx}
+                          className="px-4 py-3 truncate align-middle"
+                          style={{
+                            width: columnWidths[cellIdx] || `${100 / headers.length}%`,
+                            maxWidth: columnWidths[cellIdx] || `${100 / headers.length}%`,
+                            wordBreak: 'break-word',
+                            whiteSpace: 'normal',
+                          }}
+                        >
+                          {cell}
+                        </td>
+                      ))
+                    : (
+                        <td
+                          className="px-4 py-3 truncate align-middle"
+                          style={{
+                            width: columnWidths[0] || `${100 / headers.length}%`,
+                            maxWidth: columnWidths[0] || `${100 / headers.length}%`,
+                            wordBreak: 'break-word',
+                            whiteSpace: 'normal',
+                          }}
+                        >
+                          {renderRow(item)}
+                        </td>
+                      )}
                 </tr>
               ))
             ) : (

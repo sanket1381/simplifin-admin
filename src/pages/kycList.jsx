@@ -99,33 +99,19 @@ const KycRequests = () => {
       expired: 'bg-gray-100 text-gray-600',
     };
 
-    return (
-      <>
-        <td className="px-6 py-3 text-blue-600 underline">
-          <Link to={`/kyc-details/${item._id}`}>{item._id}</Link>
-        </td>
-        <td className="px-6 py-3">
-          <span
-            className={`px-2 py-1 text-xs rounded-full font-medium ${
-              statusColors[item.status] || 'bg-gray-100 text-gray-600'
-            }`}
-          >
-            {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
-          </span>
-        </td>
-        <td className="px-6 py-3">{item?.name}</td>
-        <td className="px-6 py-3">{item.pan}</td>
-        <td className="px-6 py-3">{item.email}</td>
-        <td className="px-6 py-3">{item.mobile?.number || 'N/A'}</td>
-        <td className="px-6 py-3">
-          {item.created_at
-            ? new Date(item.created_at).toLocaleDateString('en-US', {
-                dateStyle: 'long',
-              })
-            : 'N/A'}
-        </td>
-      </>
-    );
+    return [
+      <span className="text-blue-600 underline" key="id">
+        <Link to={`/kyc-details/${item._id}`}>{item._id}</Link>
+      </span>,
+      <span key="status" className={`px-2 py-1 text-xs rounded-full font-medium ${statusColors[item.status] || 'bg-gray-100 text-gray-600'}`}>
+        {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+      </span>,
+      <span key="name">{item?.name}</span>,
+      <span key="pan">{item.pan}</span>,
+      <span key="email">{item.email}</span>,
+      <span key="mobile">{item.mobile?.number || 'N/A'}</span>,
+      <span key="created_at">{item.created_at ? new Date(item.created_at).toLocaleDateString('en-US', { dateStyle: 'long' }) : 'N/A'}</span>
+    ];
   };
 
   if (loading) return (
@@ -137,7 +123,7 @@ const KycRequests = () => {
   return (
     <div className="w-full min-h-screen py-6 bg-white">
       <h1 className="text-2xl font-bold mb-4 px-6">KYC Requests</h1>
-      <div className="px-6">
+      <div className="px-0">
         <Table
           headers={headers}
           data={data}
@@ -153,8 +139,9 @@ const KycRequests = () => {
           handleResetFilters={handleResetFilters}
           pageSize={pageSize}
           onPageSizeChange={handlePageSizeChange}
-          totalPages={totalPages} 
+          totalPages={totalPages}
           searchPlaceholder="Search by Name or PAN..."
+          columnWidths={["15%","17%","14%","12%","21%","10%","11%"]}
         />
       </div>
     </div>

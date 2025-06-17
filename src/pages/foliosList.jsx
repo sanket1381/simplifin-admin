@@ -87,20 +87,17 @@ const FoliosList = () => {
 
   const headers = ['Folio Number', 'PAN', 'AMC'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        {/* Navigate to Folios details page with dynamic parameters */}
-        <Link
-          to={`/folios/details?folioNumber=${item.folioNumber}&userId=${item.userId}&isin=${item.isin}`}
-        >
-          {item.folioNumber}
-        </Link>
-      </td>
-      <td className="px-6 py-3">{item.pan}</td>
-      <td className="px-6 py-3">{item.schemeName}</td>
-    </>
-  );
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="folioNumber">
+      <Link
+        to={`/folios/details?folioNumber=${item.folioNumber}&userId=${item.userId}&isin=${item.isin}`}
+      >
+        {item.folioNumber}
+      </Link>
+    </span>,
+    <span key="pan">{item.pan}</span>,
+    <span key="schemeName">{item.schemeName}</span>
+  ];
 
   if (loading) return (
       <div>
@@ -129,6 +126,7 @@ const FoliosList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["30%","30%","40%"]}
         />
       </div>
     </div>

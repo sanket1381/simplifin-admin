@@ -90,79 +90,74 @@ const PurchasesList = () => {
 
   const headers = ['ID', 'USER NAME', 'STATUS', 'PAYMENT STATUS', 'AMOUNT', 'SCHEME', 'GROUP ORDER NO', 'CREATED AT'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/purchase-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item?.username}</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.state
-              ? item.state.toLowerCase().trim() === 'successful'
-                ? 'bg-green-100 text-green-600'
-                : item.state.toLowerCase().trim() === 'pending'
-                  ? 'bg-yellow-100 text-yellow-600'
-                  : item.state.toLowerCase().trim() === 'submitted'
-                    ? 'bg-blue-100 text-blue-600'
-                    : item.state.toLowerCase().trim() === 'failed'
-                      ? 'bg-red-100 text-red-600'
-                      : ''
-              : ''
-            }`}
-        >
-          {item.state
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/purchase-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="username">{item?.username}</span>,
+    <span key="status">
+      <span
+        className={`px-2 py-1 text-xs rounded-full font-medium 
+          ${item.state
             ? item.state.toLowerCase().trim() === 'successful'
-              ? 'Successful'
+              ? 'bg-green-100 text-green-600'
               : item.state.toLowerCase().trim() === 'pending'
-                ? 'Pending'
+                ? 'bg-yellow-100 text-yellow-600'
                 : item.state.toLowerCase().trim() === 'submitted'
-                  ? 'Submitted'
-                  : item.state.toLowerCase().trim() === 'failed'
-                    ? 'Failed'
-                    : ''
-            : ''}
-        </span>
-      </td>
-
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.paymentStatus
-              ? item.paymentStatus.toLowerCase().trim() === 'success'
-                ? 'bg-green-100 text-green-600'
-                : item.paymentStatus.toLowerCase().trim() === 'initiated'
                   ? 'bg-blue-100 text-blue-600'
-                  : item.paymentStatus.toLowerCase().trim() === 'failed'
+                  : item.state.toLowerCase().trim() === 'failed'
                     ? 'bg-red-100 text-red-600'
                     : ''
-              : ''
-            }`}
-        >
-          {item.paymentStatus
-            ? item.paymentStatus.toLowerCase().trim() === 'success'
-              ? 'Successful'
-              : item.paymentStatus.toLowerCase().trim() === 'initiated'
-                ? 'Initiated'
-                : item.paymentStatus.toLowerCase().trim() === 'failed'
+            : ''
+          }`}
+      >
+        {item.state
+          ? item.state.toLowerCase().trim() === 'successful'
+            ? 'Successful'
+            : item.state.toLowerCase().trim() === 'pending'
+              ? 'Pending'
+              : item.state.toLowerCase().trim() === 'submitted'
+                ? 'Submitted'
+                : item.state.toLowerCase().trim() === 'failed'
                   ? 'Failed'
                   : ''
-            : ''}
-        </span>
-      </td>
-      <td className="px-6 py-3">{item?.amount}</td>
-      <td className="px-6 py-3">{item?.plan_name}</td>
-      <td className="px-6 py-3">{item?.groupOrderNo}</td>
-      <td className="px-6 py-3">
-        {item.created_at
-          ? new Date(item.created_at).toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })
-          : 'N/A'}
-      </td>
-    </>
-  );
+          : ''}
+      </span>
+    </span>,
+    <span key="paymentStatus">
+      <span
+        className={`px-2 py-1 text-xs rounded-full font-medium 
+          ${item.paymentStatus
+            ? item.paymentStatus.toLowerCase().trim() === 'success'
+              ? 'bg-green-100 text-green-600'
+              : item.paymentStatus.toLowerCase().trim() === 'initiated'
+                ? 'bg-blue-100 text-blue-600'
+                : item.paymentStatus.toLowerCase().trim() === 'failed'
+                  ? 'bg-red-100 text-red-600'
+                  : ''
+            : ''
+          }`}
+      >
+        {item.paymentStatus
+          ? item.paymentStatus.toLowerCase().trim() === 'success'
+            ? 'Successful'
+            : item.paymentStatus.toLowerCase().trim() === 'initiated'
+              ? 'Initiated'
+              : item.paymentStatus.toLowerCase().trim() === 'failed'
+                ? 'Failed'
+                : ''
+          : ''}
+      </span>
+    </span>,
+    <span key="amount">{item?.amount}</span>,
+    <span key="plan_name">{item?.plan_name}</span>,
+    <span key="groupOrderNo">{item?.groupOrderNo}</span>,
+    <span key="created_at">{item.created_at
+      ? new Date(item.created_at).toLocaleDateString('en-US', {
+        dateStyle: 'long',
+      })
+      : 'N/A'}</span>
+  ];
 
   if (loading) return (
       <div>
@@ -191,6 +186,7 @@ const PurchasesList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["16%","16%","10%","10%","10%","19%","14%","8%"]}
         />
       </div>
     </div>

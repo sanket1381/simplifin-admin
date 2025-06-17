@@ -78,6 +78,9 @@ const AdminSidebar = ({ isSidebarOpen }) => {
 
         {openTransactionMenu && (
           <div className="mt-1 space-y-1">
+            <NavLink to="/mf-holdings" className={linkClass}>
+              MF Holdings
+            </NavLink>
             <NavLink to="/bank-mandates" className={linkClass}>
               Bank Mandates
             </NavLink>
@@ -92,9 +95,6 @@ const AdminSidebar = ({ isSidebarOpen }) => {
             </NavLink>
             <NavLink to="/redemption-plans" className={linkClass}>
               Redemption Plans
-            </NavLink>
-            <NavLink to="/mf-holdings" className={linkClass}>
-              MF Holdings
             </NavLink>
           </div>
         )}
@@ -115,6 +115,9 @@ const AdminSidebar = ({ isSidebarOpen }) => {
         </button>
         {openGoldMenu && (
           <div className="mt-1 space-y-1">
+            <NavLink to="/gold-holdings" className={linkClass}>
+              Gold Holdings
+            </NavLink>
             <NavLink to="/gold-purchase" className={linkClass}>
               Gold Purchase
             </NavLink>

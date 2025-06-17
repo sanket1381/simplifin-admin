@@ -110,43 +110,35 @@ const BankMandatesList = () => {
 
   const headers = ['INVESTORS', 'MANDATE ID', 'ID', 'REFERENCE', 'REG STATUS', 'AGGR STATUS', 'CREATED AT',];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3">{item?.username}</td>
-      <td className="px-6 py-3">{item?.mmrn}</td>
-
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/mandateDetails/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item?.uniqueRefNo}</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium
-            ${item?.mmrnRegStatus === 'CL' || item?.mmrnRegStatus === 'PR'
-              ? 'bg-red-100 text-red-600'
-              : item?.mmrnRegStatus === 'RQ'
-                ? 'bg-yellow-100 text-yellow-600'
-                : item?.mmrnRegStatus === 'PA'
-                  ? 'bg-green-100 text-green-600'
-                  : 'bg-gray-100 text-gray-600'
-            }`}
-        >
-          {regStatusMapping[item?.mmrnRegStatus] || item?.mmrnRegStatus || ''}
-        </span>
-      </td>
-      <td className="px-6 py-3">
-        {aggrStatusMapping[item?.mmrnAggrStatus] || item?.mmrnAggrStatus || ''}
-      </td>
-       <td className="px-6 py-3">
-        {item.created_at
-          ? new Date(item.created_at).toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })
-          : 'N/A'}
-      </td>
-      {/* <td className="px-6 py-3">{item?.update}</td> */}
-    </>
-  );
+  const renderRow = (item) => [
+    <span key="username">{item?.username}</span>,
+    <span key="mmrn">{item?.mmrn}</span>,
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/mandateDetails/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="uniqueRefNo">{item?.uniqueRefNo}</span>,
+    <span key="regStatus">
+      <span
+        className={`px-2 py-1 text-xs rounded-full font-medium
+          ${item?.mmrnRegStatus === 'CL' || item?.mmrnRegStatus === 'PR'
+            ? 'bg-red-100 text-red-600'
+            : item?.mmrnRegStatus === 'RQ'
+              ? 'bg-yellow-100 text-yellow-600'
+              : item?.mmrnRegStatus === 'PA'
+                ? 'bg-green-100 text-green-600'
+                : 'bg-gray-100 text-gray-600'
+          }`}
+      >
+        {regStatusMapping[item?.mmrnRegStatus] || item?.mmrnRegStatus || ''}
+      </span>
+    </span>,
+    <span key="aggrStatus">{aggrStatusMapping[item?.mmrnAggrStatus] || item?.mmrnAggrStatus || ''}</span>,
+    <span key="createdAt">{item.created_at
+      ? new Date(item.created_at).toLocaleDateString('en-US', {
+        dateStyle: 'long',
+      })
+      : 'N/A'}</span>
+  ];
 
   if (loading) return (
     <div>
@@ -175,6 +167,7 @@ const BankMandatesList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["15%","18%","20%","18%","10%","10%","10%"]}
         />
       </div>
     </div>

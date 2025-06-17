@@ -89,57 +89,53 @@ const PurchasePlanList = () => {
 
   const headers = ['ID', 'USER NAME', 'STATUS', 'AMOUNT', 'SCHEME', 'GROUP ORDER NO', 'CREATED AT'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/purchase-plan-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item?.username}</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item?.state
-              ? item?.state.toLowerCase().trim() === 'active'
-                ? 'bg-green-100 text-green-600'
-                : item?.state.toLowerCase().trim() === 'created'
-                  ? 'bg-blue-100 text-blue-600'
-                  : item?.state.toLowerCase().trim() === 'failed'
-                    ? 'bg-red-100 text-red-600'
-                    : item?.state.toLowerCase().trim() === 'cancelled'
-                      ? 'bg-gray-200 text-gray-700'
-                      : item?.state.toLowerCase().trim() === 'completed'
-                        ? 'bg-green-200 text-green-700'
-                        : ''
-              : ''
-            }`}
-        >
-          {item?.state
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/purchase-plan-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="username">{item?.username}</span>,
+    <span key="status">
+      <span
+        className={`px-2 py-1 text-xs rounded-full font-medium 
+          ${item?.state
             ? item?.state.toLowerCase().trim() === 'active'
-              ? 'Active'
+              ? 'bg-green-100 text-green-600'
               : item?.state.toLowerCase().trim() === 'created'
-                ? 'Created'
+                ? 'bg-blue-100 text-blue-600'
                 : item?.state.toLowerCase().trim() === 'failed'
-                  ? 'Failed'
+                  ? 'bg-red-100 text-red-600'
                   : item?.state.toLowerCase().trim() === 'cancelled'
-                    ? 'Cancelled'
+                    ? 'bg-gray-200 text-gray-700'
                     : item?.state.toLowerCase().trim() === 'completed'
-                      ? 'Completed'
+                      ? 'bg-green-200 text-green-700'
                       : ''
-            : ''}
-        </span>
-      </td>
-      <td className="px-6 py-3">{item?.amount}</td>
-      <td className="px-6 py-3">{item?.plan_name}</td>
-      <td className="px-6 py-3">{item?.mobile?.number || 'N/A'}</td>
-      <td className="px-6 py-3">
-        {item?.created_at
-          ? new Date(item?.created_at).toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })
-          : 'N/A'}
-      </td>
-    </>
-  );
+            : ''
+          }`}
+      >
+        {item?.state
+          ? item?.state.toLowerCase().trim() === 'active'
+            ? 'Active'
+            : item?.state.toLowerCase().trim() === 'created'
+              ? 'Created'
+              : item?.state.toLowerCase().trim() === 'failed'
+                ? 'Failed'
+                : item?.state.toLowerCase().trim() === 'cancelled'
+                  ? 'Cancelled'
+                  : item?.state.toLowerCase().trim() === 'completed'
+                    ? 'Completed'
+                    : ''
+          : ''}
+      </span>
+    </span>,
+    <span key="amount">{item?.amount}</span>,
+    <span key="plan_name">{item?.plan_name}</span>,
+    <span key="groupOrderNo">{item?.groupOrderNo}</span>,
+    <span key="created_at">{item?.created_at
+      ? new Date(item?.created_at).toLocaleDateString('en-US', {
+        dateStyle: 'long',
+      })
+      : 'N/A'}</span>
+  ];
 
   if (loading) return (
       <div>
@@ -168,6 +164,7 @@ const PurchasePlanList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["16%","16%","13%","10%","19%","16%","10%"]}
         />
       </div>
     </div>

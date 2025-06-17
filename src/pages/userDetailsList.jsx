@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { get } from '../services/commonService';
+import { get, put } from '../services/commonService';
 import Table from '../components/table/Table';
 import LoadingSpinner from '../components/loader/LoadingSpinner';
+import EditIcon from '../components/EditIcon';
+import StatusEditModal from '../components/StatusEditModal';
 
 const UserDetailsList = () => {
   const [data, setData] = useState([]);
@@ -85,37 +87,65 @@ const UserDetailsList = () => {
     setCurrentPage(1);
   };
 
-  const headers = ['ID', 'NAME', 'EMAIL', 'MOBILE NUMBER', 'STATUS', 'REFER CODE', 'CREATED AT'];
+  const headers = ['ID', 'NAME', 'EMAIL', 'MOBILE NUMBER', 'STATUS', 'REFER CODE','REFERRER CODE', 'CREATED AT', 'EDIT'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/user-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item.name}</td>
-      <td className="px-6 py-3">{item.email}</td>
-      <td className="px-6 py-3">{item.mobileNumber}</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium ${
-            item.status === 'active'
-              ? 'bg-green-100 text-green-600'
-              : 'bg-red-100 text-red-600'
-          }`}
-        >
-          {item.status === 'active' ? 'Active' : 'Inactive'}
-        </span>
-      </td>
-      <td className="px-6 py-3">{item.referCode || 'N/A'}</td>
-      <td className="px-6 py-3">
-        {item.createdAt
-          ? new Date(item.createdAt).toLocaleDateString('en-US', {
-              dateStyle: 'long',
-            })
-          : 'N/A'}
-      </td>
-    </>
-  );
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [editStatus, setEditStatus] = useState('active');
+  const [saving, setSaving] = useState(false);
+
+  const openEditModal = (user) => {
+    setSelectedUser(user);
+    setEditStatus(user.status);
+    setModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleSaveStatus = async () => {
+    if (!selectedUser) return;
+    setSaving(true);
+    try {
+      await put(`/users/${selectedUser._id}`, {
+        status: editStatus,
+      });
+      closeEditModal();
+      fetchData();
+    } catch (err) {
+      alert('Failed to update status');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/user-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="name">{item.name}</span>,
+    <span key="email">{item.email}</span>,
+    <span key="mobile">{item.mobileNumber}</span>,
+    <span key="status" className={`px-2 py-1 text-xs rounded-full font-medium ${item.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+      {item.status === 'active' ? 'Active' : 'Inactive'}
+    </span>,
+    <span key="referCode">{item.referCode || ''}</span>,
+    <span key="referrerCode">{item.referrerCode || ''}</span>,
+    <span key="createdAt">{item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-US', { dateStyle: 'long' }) : 'N/A'}</span>,
+    <span key="edit">
+      <button
+        className="hover:text-blue-600 p-0 m-0"
+        title="Edit Status"
+        onClick={() => openEditModal(item)}
+        style={{ minWidth: 0 }}
+      >
+        <EditIcon className="w-5 h-5" />
+      </button>
+    </span>
+  ];
 
   if (loading)return (
       <div>
@@ -126,7 +156,7 @@ const UserDetailsList = () => {
   return (
     <div className="w-full min-h-screen py-6 bg-white">
       <h1 className="text-2xl font-bold mb-4 px-6">User Details</h1>
-      <div className="px-6">
+      <div className="">
         <Table
           headers={headers}
           data={data}
@@ -144,8 +174,21 @@ const UserDetailsList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["16%","15%","25%","10%","8%","8%","8%","13%","3%"]}
         />
       </div>
+      <StatusEditModal
+        isOpen={modalOpen}
+        onClose={closeEditModal}
+        onSave={handleSaveStatus}
+        status={editStatus}
+        setStatus={setEditStatus}
+      />
+      {saving && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-20">
+          <div className="bg-white px-6 py-4 rounded shadow">Saving...</div>
+        </div>
+      )}
     </div>
   );
 };

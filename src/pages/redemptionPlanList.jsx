@@ -88,61 +88,56 @@ const RedemptionPlanList = () => {
     setCurrentPage(1); 
   };
 
-  const headers = ['ID', 'USER NAME', 'STATUS','FOLIO NUMBER', 'AMOUNT', 'SCHEME', 'GROUP ORDER N0', 'CREATED At'];
+  const headers = ['ID', 'USER NAME', 'STATUS','FOLIO NUMBER', 'AMOUNT', 'SCHEME', 'GROUP ORDER N0', 'CREATED AT'];
 
-  const renderRow = (item) => (
-    <>
-      <td className="px-6 py-3 text-blue-600 underline">
-        <Link to={`/redemptionplan-details/${item._id}`}>{item._id}</Link>
-      </td>
-      <td className="px-6 py-3">{item?.username}</td>
-      <td className="px-6 py-3">
-        <span
-          className={`px-2 py-1 text-xs rounded-full font-medium 
-            ${item.state
-              ? item.state.toLowerCase().trim() === 'active'
-                ? 'bg-green-100 text-green-600'
-                : item.state.toLowerCase().trim() === 'created'
-                  ? 'bg-blue-100 text-blue-600'
-                  : item.state.toLowerCase().trim() === 'failed'
-                    ? 'bg-red-100 text-red-600'
-                    : item.state.toLowerCase().trim() === 'completed'
-                      ? 'bg-green-200 text-green-700'
-                      : item.state.toLowerCase().trim() === 'cancelled'
-                        ? 'bg-gray-200 text-gray-700'
-                        : ''
-              : ''
-            }`}
-        >
-          {item.state
+  const renderRow = (item) => [
+    <span className="text-blue-600 underline" key="id">
+      <Link to={`/redemptionplan-details/${item._id}`}>{item._id}</Link>
+    </span>,
+    <span key="username">{item?.username}</span>,
+    <span key="status">
+      <span
+        className={`px-2 py-1 text-xs rounded-full font-medium 
+          ${item.state
             ? item.state.toLowerCase().trim() === 'active'
-              ? 'Active'
+              ? 'bg-green-100 text-green-600'
               : item.state.toLowerCase().trim() === 'created'
-                ? 'Created'
+                ? 'bg-blue-100 text-blue-600'
                 : item.state.toLowerCase().trim() === 'failed'
-                  ? 'Failed'
+                  ? 'bg-red-100 text-red-600'
                   : item.state.toLowerCase().trim() === 'completed'
-                    ? 'Completed'
+                    ? 'bg-green-200 text-green-700'
                     : item.state.toLowerCase().trim() === 'cancelled'
-                      ? 'Cancelled'
+                      ? 'bg-gray-200 text-gray-700'
                       : ''
-            : ''}
-        </span>
-      </td>
-      
-      <td className="px-6 py-3">{item?.folio_number || 'N/A'}</td>
-      <td className="px-6 py-3">{item?.amount || 'N/A'}</td>
-      <td className="px-6 py-3">{item?.plan_name || 'N/A'}</td>
-      <td className="px-6 py-3">{item?.groupOrderNo || 'N/A'}</td>
-      <td className="px-6 py-3">
-        {item.created_at
-          ? new Date(item?.created_at).toLocaleDateString('en-US', {
-            dateStyle: 'long',
-          })
-          : 'N/A'}
-      </td>
-    </>
-  );
+            : ''
+          }`}
+      >
+        {item.state
+          ? item.state.toLowerCase().trim() === 'active'
+            ? 'Active'
+            : item.state.toLowerCase().trim() === 'created'
+              ? 'Created'
+              : item.state.toLowerCase().trim() === 'failed'
+                ? 'Failed'
+                : item.state.toLowerCase().trim() === 'completed'
+                  ? 'Completed'
+                  : item.state.toLowerCase().trim() === 'cancelled'
+                    ? 'Cancelled'
+                    : ''
+          : ''}
+      </span>
+    </span>,
+    <span key="folio_number">{item?.folio_number || 'N/A'}</span>,
+    <span key="amount">{item?.amount || 'N/A'}</span>,
+    <span key="plan_name">{item?.plan_name || 'N/A'}</span>,
+    <span key="groupOrderNo">{item?.groupOrderNo || 'N/A'}</span>,
+    <span key="created_at">{item.created_at
+      ? new Date(item?.created_at).toLocaleDateString('en-US', {
+        dateStyle: 'long',
+      })
+      : 'N/A'}</span>
+  ];
 
   if (loading) return (
       <div>
@@ -171,6 +166,7 @@ const RedemptionPlanList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
+          columnWidths={["16%","16%","10%","10%","10%","16%","16%","9%"]}
         />
       </div>
     </div>
