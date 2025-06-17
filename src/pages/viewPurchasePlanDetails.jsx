@@ -120,7 +120,7 @@ const PurchasePlanDetails = () => {
                                             case 'failed':
                                             case 'failure':
                                                 colorClass = 'bg-red-100 text-red-600';
-                                                label = status === 'failure' ? 'Failure' : 'Failed';
+                                                label = status === 'failure' ? 'Failed' : 'Failed';
                                                 break;
                                             case 'confirmed':
                                                 colorClass = 'bg-yellow-100 text-yellow-600';
