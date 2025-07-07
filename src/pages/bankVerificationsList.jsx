@@ -151,6 +151,12 @@ const BankVerifications = () => {
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
           columnWidths={["22%","22%","25%","10%","10%","10%"]}
+          onSearchBlur={() => {
+            if (searchTerm === '') {
+              setCurrentPage(1);
+              fetchData();
+            }
+          }}
         />
       </div>
     </div>

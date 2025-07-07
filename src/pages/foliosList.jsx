@@ -41,25 +41,29 @@ const FoliosList = () => {
     }
   };
 
+  // Only let useEffect handle API calls, never call fetchData directly after state updates
   useEffect(() => {
-    fetchData();
+    if (searchTerm.length === 0 || searchTerm.length >= 3) {
+      fetchData();
+    }
+    // For 1 or 2 characters, do nothing (no API call)
   }, [currentPage, sortOrder, pageSize]);
 
+  // Debounce searchTerm changes and only update state
   useEffect(() => {
     if (searchTerm.length === 0) {
       setCurrentPage(1);
-      fetchData();
+      // fetchData will be called by the above effect
       return;
     }
-
     if (searchTerm.length >= 3) {
       const delayDebounce = setTimeout(() => {
         setCurrentPage(1);
         fetchData();
       }, 500);
-
       return () => clearTimeout(delayDebounce);
     }
+    // For 1 or 2 characters, do nothing (no API call)
   }, [searchTerm]);
 
   const handleSortClick = () => {
@@ -71,7 +75,7 @@ const FoliosList = () => {
     setSortOrder('asc');
     setCurrentPage(1);
     setPageSize(10);
-    fetchData();
+    // fetchData will be called by useEffect
   };
 
   const handlePageChange = (page) => {
@@ -85,7 +89,7 @@ const FoliosList = () => {
     setCurrentPage(1);
   };
 
-  const headers = ['Folio Number', 'PAN', 'AMC'];
+  const headers = ['Folio Number','User Name', 'PAN', 'AMC', 'Invested Value', 'Market Value'];
 
   const renderRow = (item) => [
     <span className="text-blue-600 underline" key="folioNumber">
@@ -95,8 +99,11 @@ const FoliosList = () => {
         {item.folioNumber}
       </Link>
     </span>,
-    <span key="pan">{item.pan}</span>,
-    <span key="schemeName">{item.schemeName}</span>
+    <span key="pan">{item?.username  || ""}</span>,
+    <span key="userName">{item?.pan || ""}</span>,
+    <span key="schemeName">{item?.schemeName || ""}</span>,
+    <span key="marketValue">{item?.marketValue?.amount || ""}</span>,
+    <span key="investedValue">{item?.investedValue?.amount|| ""}</span>
   ];
 
   if (loading) return (
@@ -126,7 +133,13 @@ const FoliosList = () => {
           onPageSizeChange={handlePageSizeChange}
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
-          columnWidths={["30%","30%","40%"]}
+          columnWidths={["15%","20%","15%","30%","10%","10%"]}
+          onSearchBlur={() => {
+            if (searchTerm.length === 0) {
+              setCurrentPage(1);
+              fetchData();
+            }
+          }}
         />
       </div>
     </div>

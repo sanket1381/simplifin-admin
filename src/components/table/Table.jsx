@@ -18,6 +18,7 @@ const Table = ({
   totalPages,
   searchPlaceholder = "Search...",
   columnWidths = [], // new prop: array of widths (e.g. ['80px', '120px', ...] or ['10%', '20%', ...])
+  onSearchBlur,
 }) => {
   return (
     <div className="flex flex-col min-h-screen px-6 py-4">
@@ -31,6 +32,9 @@ const Table = ({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onBlur={() => {
+                if (onSearchBlur) onSearchBlur();
+              }}
               placeholder={searchPlaceholder}
               className="pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none w-72"
             />
@@ -57,18 +61,17 @@ const Table = ({
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
               className="text-sm border border-gray-300 rounded-md px-3 py-2 shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              <option value={1}>1</option>
-              <option value={3}>3</option>
-              <option value={5}>5</option>
               <option value={10}>10</option>
-              <option value={15}>15</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
             </select>
           </div>
 
           {/* Optional Filter Dropdown */}
-          <select className="text-sm border border-gray-300 rounded-md px-3 py-2 shadow-sm bg-blue-200 hover:bg-blue-400 text-gray-700 focus:outline-none ">
+          {/* <select className="text-sm border border-gray-300 rounded-md px-3 py-2 shadow-sm bg-blue-200 hover:bg-blue-400 text-gray-700 focus:outline-none ">
             <option value="">Filter</option>
-          </select>
+          </select> */}
         </div>
       </div>
 

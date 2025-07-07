@@ -42,25 +42,29 @@ const GoldRedeemList = () => {
     }
   };
 
+  // Only let useEffect handle API calls, never call fetchData directly after state updates
   useEffect(() => {
-    fetchData();
+    if (searchTerm.length === 0 || searchTerm.length >= 3) {
+      fetchData();
+    }
+    // For 1 or 2 characters, do nothing (no API call)
   }, [currentPage, sortOrder, pageSize]);
 
+  // Debounce searchTerm changes and only update state
   useEffect(() => {
     if (searchTerm.length === 0) {
       setCurrentPage(1);
-      fetchData();
+      // fetchData will be called by the above effect
       return;
     }
-
     if (searchTerm.length >= 3) {
       const delayDebounce = setTimeout(() => {
         setCurrentPage(1);
         fetchData();
       }, 500);
-
       return () => clearTimeout(delayDebounce);
     }
+    // For 1 or 2 characters, do nothing (no API call)
   }, [searchTerm]);
 
   const handleSortClick = () => {
@@ -72,7 +76,7 @@ const GoldRedeemList = () => {
     setSortOrder('asc');
     setCurrentPage(1);
     setPageSize(10);
-    fetchData();
+    // fetchData will be called by useEffect
   };
 
   const handlePageChange = (page) => {
@@ -131,6 +135,12 @@ const GoldRedeemList = () => {
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
           columnWidths={["22%","22%","10%","11%","25%","10%"]}
+          onSearchBlur={() => {
+            if (searchTerm === '') {
+              setCurrentPage(1);
+              fetchData();
+            }
+          }}
         />
       </div>
     </div>

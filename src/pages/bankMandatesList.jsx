@@ -168,6 +168,12 @@ const BankMandatesList = () => {
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
           columnWidths={["15%","18%","20%","18%","10%","10%","10%"]}
+          onSearchBlur={() => {
+            if (searchTerm === '') {
+              setCurrentPage(1);
+              fetchData();
+            }
+          }}
         />
       </div>
     </div>

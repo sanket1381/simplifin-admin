@@ -134,6 +134,12 @@ const AddressDetailsList = () => {
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
           columnWidths={["15%","15%","25%","15%","10%","10%","10%"]}
+          onSearchBlur={() => {
+            if (searchTerm === '') {
+              setCurrentPage(1);
+              fetchData();
+            }
+          }}
         />
       </div>
     </div>

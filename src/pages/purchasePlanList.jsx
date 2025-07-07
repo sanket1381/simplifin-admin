@@ -169,6 +169,12 @@ const PurchasePlanList = () => {
           totalPages={totalPages}
           searchPlaceholder="Search by Name ..."
           columnWidths={["16%","16%","13%","10%","19%","16%","10%"]}
+          onSearchBlur={() => {
+            if (searchTerm === '') {
+              setCurrentPage(1);
+              fetchData();
+            }
+          }}
         />
       </div>
     </div>
