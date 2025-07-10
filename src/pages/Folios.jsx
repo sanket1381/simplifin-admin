@@ -90,7 +90,7 @@ const Folios = () => {
       {/* Folios Section */}
       <h2 className="text-xl font-semibold mb-4">Folios</h2>
       {renderTable(
-        ['Folio Number', 'Username', 'PAN', 'Scheme Name', 'Market Value'],
+        ['Folio Number', 'Username', 'PAN', 'Scheme Name', 'Invested Value', 'Market Value', "Units", "NAV", "Avg NAV"],
         data.folios,
         (item) => (
           <>
@@ -98,7 +98,11 @@ const Folios = () => {
             <td className="px-6 py-3">{item.username}</td>
             <td className="px-6 py-3">{item.pan}</td>
             <td className="px-6 py-3">{item.schemeName}</td>
+            <td className="px-6 py-3">{item.investedValue.amount}</td>
             <td className="px-6 py-3">{item.marketValue.amount}</td>
+            <td className="px-6 py-3">{item.holdings.units.toFixed(2)}</td>
+            <td className="px-6 py-3">{item.nav.value.toFixed(2)}</td>
+            <td className="px-6 py-3">{(item.investedValue.amount / item.holdings.units).toFixed(2)}</td>
           </>
         )
       )}

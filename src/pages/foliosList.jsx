@@ -102,8 +102,8 @@ const FoliosList = () => {
     <span key="pan">{item?.username  || ""}</span>,
     <span key="userName">{item?.pan || ""}</span>,
     <span key="schemeName">{item?.schemeName || ""}</span>,
-    <span key="marketValue">{item?.marketValue?.amount || ""}</span>,
-    <span key="investedValue">{item?.investedValue?.amount|| ""}</span>
+    <span key="investedValue">{item?.investedValue?.amount || ""}</span>,
+    <span key="marketValue">{item?.marketValue?.amount || ""}</span>
   ];
 
   if (loading) return (

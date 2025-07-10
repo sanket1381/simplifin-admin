@@ -83,19 +83,42 @@ const UserKycDetails = () => {
             <TableRow label="ID" value={userData._id} />
             <TableRow
               label="Status"
-              value={
-                <span
-                  className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
-                    userData.status === 'successful'
-                      ? 'bg-green-100 text-green-600'
-                      : 'bg-red-100 text-red-600'
-                  }`}
-                >
-                  {userData.status === 'successful' ? 'Successful' : 'Failed'}
-                </span>
-              }
+              value={(() => {
+                const status = userData.status ? userData.status.toLowerCase().trim() : '';
+                let colorClass = '';
+                let label = '';
+                switch (status) {
+                  case 'successful':
+                  case 'success':
+                    colorClass = 'bg-green-100 text-green-600';
+                    label = 'Successful';
+                    break;
+                  case 'pending':
+                    colorClass = 'bg-yellow-100 text-yellow-600';
+                    label = 'Pending';
+                    break;
+                  case 'failed':
+                  case 'rejected':
+                    colorClass = 'bg-red-100 text-red-600';
+                    label = 'Failed';
+                    break;
+                  case 'incomplete':
+                    colorClass = 'bg-gray-200 text-gray-700';
+                    label = 'Incomplete';
+                    break;
+                  default:
+                    colorClass = 'bg-gray-100 text-gray-600';
+                    label = status || 'N/A';
+                }
+                return (
+                  <span className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${colorClass}`}>
+                    {label}
+                  </span>
+                );
+              })()}
             />
             <TableRow label="CAN" value={userData?.mfCAN?.can || 'N/A'} />
+            <TableRow label="NAME" value={userData?.name || 'N/A'} />
             <TableRow label="PAN" value={userData?.pan || 'N/A'} />
             <TableRow label="EMAIL" value={userData?.email || 'N/A'} />
             <TableRow label="MOBILE NUMBER" value={userData.mobile?.number || 'N/A'} />
@@ -121,7 +144,7 @@ const UserKycDetails = () => {
                       onClick={() => handleView(userData.aadhaar_card)}
                       className="flex items-center text-blue-600 hover:underline"
                     >
-                      <FiEye className="mr-1" /> View
+                    <FiEye className="mr-1" /> View
                     </button>
                     <button
                       onClick={() => handleDownload(userData.aadhaar_card)}
