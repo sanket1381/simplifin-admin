@@ -14,7 +14,7 @@ const MFHoldings = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('desc');
 
-  const headers = ['USER NAME', 'FOLIO NUMBER', 'INVESTED VALUE', 'CURRENT VALUE', 'PROFIT & LOSS', 'CREATED AT'];
+  const headers = ['USER NAME', 'INVESTED VALUE', 'CURRENT VALUE', 'PROFIT & LOSS', 'CREATED AT'];
 
   const fetchData = async () => {
     try {
@@ -78,11 +78,10 @@ const MFHoldings = () => {
 
   const renderRow = (item) => [
     <span key="username">{item?.username}</span>,
-    <span key="folioNumber">{item?.folioNumber}</span>,
     <span key="investedValue">{!isNaN(Number(item?.investedValue)) ? Number(item.investedValue).toFixed(2) : item?.investedValue}</span>,
     <span key="currentValue">{!isNaN(Number(item?.currentValue)) ? Number(item.currentValue).toFixed(2) : item?.currentValue}</span>,
     <span key="profitLoss">{!isNaN(Number(item?.profitLoss)) ? Number(item.profitLoss).toFixed(2) : item?.profitLoss}</span>,
-    <span key="tillDate">{item?.tillDate ? new Date(item?.tillDate).toLocaleDateString('en-US', {dateStyle: 'long'}) : 'N/A'}</span>
+    <span key="tillDate">{item?.updatedAt ? new Date(item?.updatedAt).toLocaleDateString('en-US', {dateStyle: 'long'}) : 'N/A'}</span>
   ];
 
   if (loading) return <div><LoadingSpinner /></div>;
